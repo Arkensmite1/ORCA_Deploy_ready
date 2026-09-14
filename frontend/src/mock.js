@@ -384,7 +384,16 @@ export function mockOrcaReply(raw) {
       text: "No cyclone or severe-weather bulletin is currently active for the Ratnagiri coast (checked 10:40 AM, official feed). ORCA re-checks every 15 minutes and will alert you immediately if one is issued.",
     };
   }
-  if (q.includes("route") || q.includes("safe area") || q.includes("shelter") || q.includes("zone")) {
+  if (q.includes("fishing zone") || q.includes("fish zone") || q.includes("best zone") || q.includes("which zone") || q.includes("closest zone") || q.includes("pfz")) {
+    return {
+      from: "orca",
+      kind: "simple",
+      badge: "ZONE STATUS",
+      tone: "green",
+      text: "Closest favourable zone today: Fishing Zone B — SAFE, wind and waves within range, 2+ km clear of the restricted boundary. Zone C is also SAFE but slightly farther out. Zone A currently carries a wind-advisory history and isn't recommended until it's rechecked. Open the Map to see the live PFZ layer.",
+    };
+  }
+  if (q.includes("route") || q.includes("safe area") || q.includes("shelter")) {
     return {
       from: "orca",
       kind: "simple",

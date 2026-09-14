@@ -234,7 +234,9 @@ def classify_intent(text: str) -> str:
         return "WARNING_QUERY"
     if any(w in q for w in ["afternoon", "evening", "later"]):
         return "TIME_FOLLOWUP"
-    if any(w in q for w in ["route", "safe area", "shelter", "zone", "harbour"]):
+    if any(w in q for w in ["fishing zone", "fish zone", "best zone", "which zone", "closest zone", "pfz"]):
+        return "FISHING_ZONE_QUERY"
+    if any(w in q for w in ["route", "safe area", "shelter", "harbour"]):
         return "ROUTE_QUERY"
     if any(w in q for w in ["plan", "week", "7-day", "7 day", "day 3"]):
         return "PLAN_QUERY"
@@ -341,6 +343,20 @@ def build_answer(intent: str, lang: str, risk: dict, c: dict, geo: dict) -> dict
         return {"kind": "simple", "badge": "MODERATE — WATCH", "tone": "yellow",
                 "text": ("Afternoon wind is forecast to rise past 3 PM and a return-window risk "
                          "opens up after 4 PM. If you go, plan to be back before then.")}
+
+    if intent == "FISHING_ZONE_QUERY":
+        safe = risk["level"] in ("GREEN", "YELLOW")
+        if safe:
+            return {"kind": "simple", "badge": "ZONE STATUS", "tone": "green",
+                    "text": ("Closest favourable zone today: Fishing Zone B — SAFE, wind and waves "
+                             "within range, 2+ km clear of the restricted boundary. Zone C is also "
+                             "SAFE but slightly farther out. Zone A currently carries a wind-advisory "
+                             "history and isn't recommended until it's rechecked. Open the Map for "
+                             "the live PFZ layer.")}
+        return {"kind": "simple", "badge": "ZONE STATUS", "tone": "orange",
+                "text": ("No fishing zone is currently recommended — wind and waves are elevated "
+                         "coast-wide. ORCA will surface the nearest safe zone as soon as conditions "
+                         "improve.")}
 
     if intent == "ROUTE_QUERY":
         s = geo["nearest_shelter"]

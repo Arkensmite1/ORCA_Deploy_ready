@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ORCA — Marine Intelligence & Safety</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* ============ ORCA — "soft daylight" theme ============ */
+  --sky-1:#FFFFFF;
+  --sky-2:#F7FAFC;
+  --sky-3:#F1F6FA;
+
+  /* device chrome */
+  --chrome:#FFFFFF;
+  --chrome-2:#F1F6FA;
+  --hairline:rgba(20,111,174,.12);
+
+  /* content surfaces */
+  --surface:#FFFFFF;
+  --surface-alt:#F6F9FC;
+  --paper-deep:#EDF3F8;
+  --surface-2:#EAF1F7;
+
+  --ink:#152A38;
+  --ink-soft:#59717C;
+  --ink-faint:#93A7AF;
+  --line:rgba(20,111,174,.12);
+
+  /* primary accent — oceanic blue */
+  --teal:#146FAE;
+  --teal-deep:#0B3C61;
+  --teal-tint:rgba(20,111,174,.10);
+
+  /* secondary accent — nautical amber (calls to action) */
+  --brass:#F2A93B;
+  --brass-bright:#F7C46C;
+  --brass-tint:rgba(242,169,59,.13);
+
+  /* status */
+  --green:#2BAE73;   --green-tint:rgba(43,174,115,.12);
+  --yellow:#EFB223;  --yellow-tint:rgba(239,178,35,.14);
+  --orange:#F0803F;  --orange-tint:rgba(240,128,63,.13);
+  --red:#EF5B57;     --red-tint:rgba(239,91,87,.11);
+
+  --font-display:'Poppins','Inter',sans-serif;
+  --font-mono:'IBM Plex Mono',monospace;
+  --font-body:'Inter',-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{
+  background:
+    radial-gradient(circle at 16% -8%, rgba(20,111,174,.06) 0%, transparent 46%),
+    radial-gradient(circle at 90% 106%, rgba(242,169,59,.06) 0%, transparent 42%),
+    linear-gradient(160deg, var(--sky-1) 0%, var(--sky-2) 55%, var(--sky-3) 100%);
+  font-family:var(--font-body);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  padding:26px 14px 40px;
+}
+.contour-tex{
+  background-image:
+    radial-gradient(ellipse 140% 60% at 30% 0%, rgba(20,111,174,.06), transparent 60%),
+    repeating-linear-gradient(115deg, rgba(20,111,174,.025) 0px, rgba(20,111,174,.025) 1px, transparent 1px, transparent 26px);
+}
+.paper-tex{
+  background-image:
+    radial-gradient(rgba(27,43,44,.03) .7px, transparent .7px);
+  background-size:9px 9px;
+}
+
+/* ================= OUTER FRAME LAYOUT ================= */
+.app-wrap{display:flex; gap:34px; align-items:flex-start; max-width:980px; width:100%; justify-content:center; flex-wrap:wrap;}
+.brand-side{color:var(--ink); max-width:300px; padding-top:22px;}
+.brand-eyebrow{display:flex; align-items:center; gap:8px; font-size:12px; font-weight:600; letter-spacing:.02em; color:var(--teal-deep); margin-bottom:16px;}
+.brand-eyebrow .pulse{width:7px;height:7px;border-radius:50%;background:var(--green); animation:pulseDot 2.4s infinite;}
+@keyframes pulseDot{
+  0%{box-shadow:0 0 0 0 rgba(43,174,115,.4);}
+  70%{box-shadow:0 0 0 9px rgba(43,174,115,0);}
+  100%{box-shadow:0 0 0 0 rgba(43,174,115,0);}
+}
+.brand-side h1{font-family:var(--font-display); font-size:28px; line-height:1.25; font-weight:600; letter-spacing:-.01em; color:var(--teal-deep);}
+.brand-side p{margin-top:14px; font-size:14px; line-height:1.65; color:var(--ink-soft);}
+.brand-legend{margin-top:26px; display:flex; flex-direction:column; gap:9px;}
+.brand-legend .item{display:flex; align-items:center; gap:9px; font-size:12.5px; color:var(--ink-soft);}
+.brand-legend .sw{width:10px;height:10px;border-radius:3px; flex:0 0 auto;}
+.brand-tap{margin-top:26px; font-size:12px; color:var(--ink-faint); line-height:1.65; border-top:1px solid var(--line); padding-top:16px;}
+.brand-tap b{color:var(--teal-deep);}
+
+/* ================= PHONE SHELL ================= */
+.phone-outer{position:relative;}
+.phone-outer::before{
+  content:''; position:absolute; inset:-3px; border-radius:48px;
+  background:linear-gradient(155deg,#ffffff,#DCE9F3 30%,#ffffff 60%,#DCE9F3 100%);
+  z-index:-1;
+}
+.phone{
+  width:378px; height:800px; background:var(--surface-alt);
+  border:7px solid #FFFFFF; border-radius:46px;
+  position:relative; overflow:hidden;
+  box-shadow:0 40px 80px -30px rgba(20,60,55,.28), 0 0 0 1px rgba(20,111,174,.08);
+  display:flex; flex-direction:column;
+}
+.island{position:absolute; top:12px; left:50%; transform:translateX(-50%); width:100px; height:24px; background:#1B2B2C; border-radius:20px; z-index:50;}
+.statusbar{height:40px; flex:0 0 auto; display:flex; align-items:center; justify-content:space-between; padding:0 26px; font-size:11.5px; font-weight:700; color:var(--teal-deep); background:linear-gradient(180deg,var(--chrome),var(--chrome-2)); position:relative; z-index:20; border-bottom:1px solid var(--hairline);}
+.statusbar .icons{display:flex; align-items:center; gap:4px; letter-spacing:.5px; color:var(--ink-soft);}
+.screens{flex:1; position:relative; overflow:hidden;}
+.screen{
+  position:absolute; inset:0; overflow-y:auto; background:var(--surface-alt);
+  opacity:0; visibility:hidden; transform:translateY(6px); transition:opacity .18s ease, transform .18s ease;
+  padding-bottom:14px;
+}
+.screen.active{opacity:1; visibility:visible; transform:translateY(0); z-index:5;}
+.screen::-webkit-scrollbar{width:0;}
+
+/* bottom nav */
+.bottomnav{
+  flex:0 0 auto; height:76px; background:linear-gradient(180deg,var(--chrome),var(--chrome-2)); border-top:1px solid var(--hairline);
+  display:flex; align-items:center; padding:0 6px 10px; position:relative; z-index:30;
+}
+.navitem{flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; color:var(--ink-faint); cursor:pointer; padding-top:10px; border:none; background:none; font-family:var(--font-body); position:relative;}
+.navitem svg{width:21px;height:21px;}
+.navitem span{font-size:9.5px; font-weight:700; letter-spacing:.01em;}
+.navitem.active{color:var(--teal-deep);}
+.navitem.active .navdot{display:block;}
+.navdot{display:none; width:4px; height:4px; border-radius:50%; background:var(--brass); position:absolute; margin-top:-30px;}
+
+.sos-fab{
+  position:absolute; right:16px; bottom:96px; z-index:40;
+  width:56px; height:56px; border-radius:50%; background:linear-gradient(150deg,#FF8783,var(--red) 75%); color:#fff;
+  display:flex; align-items:center; justify-content:center; flex-direction:column;
+  font-weight:800; font-size:10px; letter-spacing:.02em; box-shadow:0 10px 22px -8px rgba(239,91,87,.55);
+  cursor:pointer; border:3px solid #fff;
+}
+.sos-fab::after{
+  content:''; position:absolute; inset:-6px; border-radius:50%; border:2px solid rgba(239,91,87,.35);
+  animation:sosRing 2.1s infinite;
+}
+@keyframes sosRing{0%{transform:scale(.9); opacity:.8;} 100%{transform:scale(1.5); opacity:0;}}
+
+/* ============ SHARED UI ATOMS ============ */
+.topbar{padding:16px 18px 12px; background:linear-gradient(180deg,var(--chrome),var(--chrome-2)); border-bottom:1px solid var(--hairline); display:flex; align-items:center; gap:10px; position:sticky; top:0; z-index:10;}
+.topbar h3{font-family:var(--font-display); font-size:17px; font-weight:600; flex:1; color:var(--ink); letter-spacing:0;}
+.topbar .backbtn{width:32px;height:32px;border-radius:50%;background:var(--surface-2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;cursor:pointer;flex:0 0 auto;}
+.topbar .backbtn svg,.topbar .iconbtn svg{stroke:var(--ink) !important;}
+.topbar .iconbtn{width:32px;height:32px;border-radius:50%;background:var(--surface-2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;cursor:pointer;flex:0 0 auto;}
+.pad{padding:16px 18px;}
+.section-gap{margin-top:18px;}
+.card{background:var(--surface); border-radius:16px; padding:15px 16px; border:1px solid var(--line); box-shadow:0 1px 0 rgba(255,255,255,.6) inset, 0 8px 18px -14px rgba(20,45,45,.16);}
+.card + .card{margin-top:11px;}
+.row{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+.col{display:flex; flex-direction:column; gap:3px;}
+.eyebrow-sm{font-size:11px; font-weight:600; color:var(--ink-faint); letter-spacing:.01em;}
+.h-title{font-family:var(--font-display); font-weight:600; font-size:17px; color:var(--ink);}
+.txt-sm{font-size:12.5px; color:var(--ink-soft); line-height:1.55;}
+.txt-xs{font-size:11px; color:var(--ink-faint);}
+.badge{display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:20px; font-size:11px; font-weight:700; letter-spacing:.01em;}
+.badge.green{background:var(--green-tint); color:var(--green);}
+.badge.yellow{background:var(--yellow-tint); color:#9A7412;}
+.badge.orange{background:var(--orange-tint); color:var(--orange);}
+.badge.red{background:var(--red-tint); color:var(--red);}
+.badge .dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
+.tag{font-size:9.5px; font-weight:700; padding:3.5px 9px; border-radius:20px; letter-spacing:.01em;}
+.tag.sim{background:var(--brass-tint); color:#C05A2E;}
+.tag.real{background:var(--teal-tint); color:var(--teal-deep);}
+.chip{background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:8px 14px; font-size:11.5px; font-weight:600; color:var(--ink-soft); white-space:nowrap; cursor:pointer;}
+.chip.on{background:var(--teal); border-color:var(--teal); color:#fff;}
+.btn{display:flex; align-items:center; justify-content:center; gap:8px; border-radius:14px; font-size:13.5px; font-weight:700; padding:14px; border:none; width:100%; cursor:pointer; font-family:var(--font-body);}
+.btn.primary{background:linear-gradient(135deg,#2E93D6,var(--teal)); color:#fff; box-shadow:0 10px 22px -10px rgba(20,111,174,.55);}
+.btn.brass{background:linear-gradient(135deg,var(--brass-bright),var(--brass)); color:#fff; box-shadow:0 10px 22px -10px rgba(242,169,59,.55);}
+.btn.ghost{background:#fff; color:var(--teal-deep); border:1.5px solid var(--teal);}
+.btn.sos{background:linear-gradient(135deg,#FF8783,var(--red)); color:#fff; box-shadow:0 10px 22px -10px rgba(239,91,87,.5);}
+.btn.ghost-red{background:#fff; color:var(--red); border:1.5px solid var(--red);}
+.btn.sm{padding:10px; font-size:12px;}
+svg.icon{width:17px;height:17px;flex:0 0 auto;}
+svg.icon-lg{width:22px;height:22px;flex:0 0 auto;}
+.hr{height:1px; background:var(--line); margin:14px 0;}
+.scrollx{display:flex; gap:8px; overflow-x:auto; padding-bottom:2px;}
+.scrollx::-webkit-scrollbar{display:none;}
+
+/* map placeholder — soft bathymetric chart style */
+.mapview{position:relative; height:190px; border-radius:16px; overflow:hidden; background:
+    repeating-radial-gradient(circle at 72% 20%, rgba(20,111,174,.10) 0px, rgba(20,111,174,.10) 1px, transparent 1px, transparent 14px),
+    linear-gradient(180deg,#DCEEF7 0%,#B8D9EC 100%); border:1px solid var(--line);}
+.mapview .grid{position:absolute; inset:0; background-image:linear-gradient(rgba(11,60,97,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(11,60,97,.08) 1px, transparent 1px); background-size:22px 22px;}
+.mapview .land{position:absolute; left:-24px; top:-14px; width:120px; height:150px; background:#EFE7D2; border-radius:40% 55% 60% 45%/50% 45% 55% 50%; opacity:.95; box-shadow:0 0 0 3px rgba(242,169,59,.18);}
+.mapview .route{position:absolute; left:44px; top:118px; width:160px; height:2px; border-top:2px dashed var(--teal-deep); transform:rotate(-16deg); opacity:.85;}
+.pin{position:absolute; width:15px;height:15px; border-radius:50% 50% 50% 0; transform:rotate(-45deg); border:2px solid #fff; box-shadow:0 3px 6px rgba(0,0,0,.18);}
+.pin.you{background:var(--teal-deep); left:48px; top:112px;}
+.pin.zone{background:var(--green); left:190px; top:66px;}
+.pin.hazard{background:var(--red); left:150px; top:38px;}
+.pin.rescue{background:var(--orange); left:126px; top:92px;}
+.pin.shelter{background:var(--brass); left:230px; top:118px;}
+.ripple{position:absolute; width:15px;height:15px; border-radius:50%; border:2px solid var(--teal-deep); left:48px; top:112px; margin-left:0; margin-top:0; animation:ripple 2.4s infinite;}
+@keyframes ripple{0%{transform:scale(1); opacity:.85;} 100%{transform:scale(3.2); opacity:0;}}
+
+/* radial risk dial */
+.dial-wrap{position:relative; width:168px; height:168px; margin:0 auto;}
+.dial-wrap svg{width:100%; height:100%; transform:rotate(-90deg);}
+.dial-center{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;}
+.dial-center .lvl{font-family:var(--font-display); font-weight:600; font-size:26px; color:var(--ink);}
+.dial-center .lbl{font-size:9.5px; letter-spacing:.04em; color:var(--ink-faint); margin-top:2px;}
+
+/* wave divider motif */
+.wave-motif{width:100%; height:18px; display:block;}
+
+/* toggle switch */
+.toggle{width:42px;height:24px;border-radius:20px;background:var(--line); position:relative; cursor:pointer; flex:0 0 auto;}
+.toggle.on{background:var(--teal);}
+.toggle .knob{position:absolute; top:2.5px; left:3px; width:19px;height:19px;border-radius:50%; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.2); transition:left .15s ease;}
+.toggle.on .knob{left:20px;}
+
+/* segmented control */
+.segment{display:flex; background:var(--surface-2); border-radius:12px; padding:4px; gap:4px;}
+.segment .seg{flex:1; text-align:center; padding:8px 4px; border-radius:9px; font-size:11.5px; font-weight:700; color:var(--ink-soft); cursor:pointer;}
+.segment .seg.on{background:#fff; color:var(--teal-deep); box-shadow:0 2px 8px rgba(0,0,0,.07);}
+
+/* progress dots for onboarding */
+.dots{display:flex; gap:6px; justify-content:center;}
+.dots span{width:7px;height:7px;border-radius:50%; background:var(--line);}
+.dots span.on{background:var(--teal); width:20px; border-radius:6px;}
+
+/* modal / sheet overlay */
+.overlay{position:absolute; inset:0; background:rgba(20,40,40,.42); z-index:60; display:none; align-items:flex-end; backdrop-filter:blur(1px);}
+.overlay.show{display:flex;}
+.sheet{background:var(--surface); width:100%; border-radius:22px 22px 0 0; padding:8px 18px 22px; max-height:82%; overflow-y:auto; border-top:3px solid var(--teal);}
+.sheet-handle{width:36px;height:4px;border-radius:3px;background:var(--line); margin:8px auto 14px;}
+
+/* demo ribbon */
+.demo-ribbon{background:var(--brass-tint); color:#C05A2E; font-size:10.5px; font-weight:700; text-align:center; padding:8px; letter-spacing:.02em; border-bottom:1px solid var(--hairline);}
+
+/* chat bubbles */
+.bubble-user{background:var(--teal-deep); color:#fff; border-radius:16px 16px 4px 16px; padding:10px 14px; font-size:12.5px; max-width:80%; line-height:1.45;}
+.bubble-row{display:flex;}
+.bubble-row.right{justify-content:flex-end;}
+
+/* risk gauge */
+.gauge-wrap{display:flex; flex-direction:column; align-items:center; padding:18px 0 6px;}
+
+/* alert list dot rail */
+.timeline-item{display:flex; gap:12px;}
+.timeline-rail{display:flex; flex-direction:column; align-items:center; width:14px;}
+.timeline-rail .tdot{width:9px;height:9px;border-radius:50%; margin-top:5px;}
+.timeline-rail .tline{flex:1; width:2px; background:var(--line); margin-top:3px;}
+
+/* small avatar */
+.avatar{width:34px;height:34px;border-radius:50%; background:var(--teal-tint); color:var(--teal-deep); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; flex:0 0 auto;}
+
+/* agent trace node (observability screen) */
+.trace-node{display:flex; gap:10px; align-items:flex-start;}
+.trace-rail{display:flex; flex-direction:column; align-items:center; width:20px;}
+.trace-rail .tnode{width:11px;height:11px;border-radius:3px; margin-top:3px; transform:rotate(45deg);}
+.trace-rail .tconn{flex:1; width:2px; background:var(--line); margin:2px 0;}
+.coord{font-family:var(--font-mono); font-size:11px; letter-spacing:.01em;}
+
+.footer-hint{max-width:980px; width:100%; margin:36px auto 0; text-align:center; color:var(--ink-faint); font-size:12px;}
+
+/* ============ HOME SCREEN — friendly redesign ============ */
+.app-header{display:flex; align-items:center; gap:10px; padding:14px 18px 10px; background:var(--surface); border-bottom:1px solid var(--line);}
+.app-header .mark{width:36px; height:36px; border-radius:11px; background:linear-gradient(150deg,#2E93D6,var(--teal-deep)); display:flex; align-items:center; justify-content:center; flex:0 0 auto; box-shadow:0 6px 14px -6px rgba(20,111,174,.5);}
+.app-header .wordmark{font-family:var(--font-display); font-weight:700; font-size:19px; color:var(--ink); letter-spacing:.01em; flex:1;}
+.app-header .wordmark small{display:block; font-family:var(--font-body); font-weight:500; font-size:10px; color:var(--ink-faint); letter-spacing:.02em; margin-top:1px;}
+.app-header .hicon{width:34px;height:34px;border-radius:50%;background:var(--surface-2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;cursor:pointer;flex:0 0 auto;}
+
+.hero-status{border-radius:20px; padding:18px; position:relative; overflow:hidden; background:linear-gradient(150deg,#EAF4FB 0%,#D9EBF7 100%); border:1px solid rgba(20,111,174,.14);}
+.hero-status .hs-waves{position:absolute; left:0; right:0; bottom:-2px; height:34px; opacity:.55;}
+.hero-status .hs-top{display:flex; align-items:flex-start; justify-content:space-between; position:relative; z-index:2;}
+.hero-status .hs-metrics{display:flex; gap:8px; margin-top:16px; position:relative; z-index:2;}
+.hs-metric{flex:1; background:rgba(255,255,255,.65); border-radius:13px; padding:10px 8px; text-align:center;}
+.hs-metric .m-icon{width:22px;height:22px; margin:0 auto 4px;}
+
+.quick-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
+.quick-tile{background:var(--surface); border-radius:16px; padding:14px 6px; text-align:center; cursor:pointer; border:1px solid var(--line); box-shadow:0 8px 16px -12px rgba(20,45,45,.14);}
+.quick-tile .qt-ico{width:38px;height:38px; border-radius:12px; display:flex; align-items:center; justify-content:center; margin:0 auto 8px;}
+.quick-tile .qt-label{font-size:11.5px; font-weight:700; color:var(--ink);}
+
+.ask-card{border-radius:18px; padding:16px; background:linear-gradient(150deg,#ffffff,#F2F8FC); border:1px solid var(--line); cursor:pointer; box-shadow:0 10px 20px -14px rgba(20,45,45,.16);}
+.ask-input{margin-top:10px; display:flex; align-items:center; gap:10px; background:#fff; border:1px solid var(--line); border-radius:16px; padding:12px 14px;}
+.ask-send{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#2E93D6,var(--teal)); display:flex; align-items:center; justify-content:center; flex:0 0 auto;}
+
+@media (max-width:840px){
+  .brand-side{display:none;}
+}
+</style>
+</head>
+<body>
+
+<div class="app-wrap">
+
+  <!-- ============ BRAND SIDE PANEL ============ -->
+  <div class="brand-side">
+    <div class="brand-eyebrow"><span class="pulse"></span>LIVE PROTOTYPE — TAP TO NAVIGATE</div>
+    <h1>ORCA doesn't stop at the first answer.</h1>
+    <p>Marine EcOsystem Reasoning with Collaborative Agents — a working front-end walkthrough of the full PLAN → MONITOR → RESPOND lifecycle, built for Problem Statement 26176.</p>
+    <div class="brand-legend">
+      <div class="item"><span class="sw" style="background:var(--green)"></span>Green — low risk, proceed</div>
+      <div class="item"><span class="sw" style="background:var(--yellow)"></span>Yellow — moderate, watch</div>
+      <div class="item"><span class="sw" style="background:var(--orange)"></span>Orange — high, caution</div>
+      <div class="item"><span class="sw" style="background:var(--red)"></span>Red — critical / emergency</div>
+    </div>
+    <div class="brand-tap">
+      <b>Try this:</b> Open Profile → Demo control panel to jump through the whole PLAN → MONITOR → EMERGENCY → RESCUE story. Or ask ORCA a question, view its Agent trace, then hold the SOS button for 3 seconds to see the confirmation flow.
+    </div>
+  </div>
+
+  <!-- ============ PHONE ============ -->
+  <div class="phone-outer">
+    <div class="phone">
+      <div class="island"></div>
+      <div class="statusbar" id="statusbar">
+        <span id="clock">9:41</span>
+        <div class="icons">●●●&nbsp;&nbsp;5G&nbsp;&nbsp;▮▮▮</div>
+      </div>
+
+      <div class="screens" id="screens">
+
+        <!-- ============ SPLASH ============ -->
+        <section class="screen active" id="scr-splash">
+          <div style="height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; background:radial-gradient(circle at 50% 30%, #EAF4FB 0%, #FCFEFF 75%); color:var(--teal-deep); text-align:center; padding:0 30px;">
+            <svg width="64" height="64" viewBox="0 0 64 64" fill="none"><path d="M8 40c8-14 16-14 24 0s16 14 24 0" stroke="#146FAE" stroke-width="3" stroke-linecap="round"/><path d="M8 26c8-14 16-14 24 0s16 14 24 0" stroke="#F2A93B" stroke-width="3" stroke-linecap="round" opacity=".85"/></svg>
+            <div style="font-family:var(--font-display); font-weight:700; font-size:30px; margin-top:18px; letter-spacing:-.01em;">ORCA</div>
+            <div style="font-size:12.5px; color:var(--ink-soft); margin-top:6px; max-width:230px; line-height:1.5;">Marine EcOsystem Reasoning with Collaborative Agents</div>
+            <button class="btn brass" style="margin-top:38px; max-width:200px;" onclick="go('onboard1')">Begin</button>
+            <div class="txt-xs" style="color:var(--ink-faint); margin-top:14px;">Problem Statement 26176 · ISRO</div>
+          </div>
+        </section>
+
+        <!-- ============ ONBOARDING 1 ============ -->
+        <section class="screen" id="scr-onboard1">
+          <div style="height:100%; display:flex; flex-direction:column;">
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 34px; text-align:center;">
+              <svg width="120" height="90" viewBox="0 0 120 90" fill="none"><path d="M4 70c14-24 28-24 42 0s28 24 42 0 18-16 28-8" stroke="#146FAE" stroke-width="4" stroke-linecap="round"/><circle cx="90" cy="30" r="14" fill="#FFF6E6" stroke="#F2A93B" stroke-width="2"/><path d="M84 30h12M90 24v12" stroke="#F2A93B" stroke-width="2" stroke-linecap="round"/></svg>
+              <div class="h-title" style="margin-top:22px; font-size:19px;">Ask in plain language</div>
+              <div class="txt-sm" style="margin-top:8px;">"Can I go fishing tomorrow morning?" — ORCA understands English, Hindi, and mixed regional speech.</div>
+            </div>
+            <div class="pad">
+              <div class="dots" style="margin-bottom:18px;"><span class="on"></span><span></span><span></span></div>
+              <button class="btn primary" onclick="go('onboard2')">Next</button>
+              <div style="text-align:center; margin-top:12px;"><span class="txt-xs" style="cursor:pointer;" onclick="go('login')">Skip</span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ ONBOARDING 2 ============ -->
+        <section class="screen" id="scr-onboard2">
+          <div style="height:100%; display:flex; flex-direction:column;">
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 34px; text-align:center;">
+              <svg width="120" height="90" viewBox="0 0 120 90" fill="none"><circle cx="60" cy="45" r="8" fill="#146FAE"/><circle cx="60" cy="45" r="20" stroke="#146FAE" stroke-width="2" opacity=".4"/><circle cx="60" cy="45" r="32" stroke="#146FAE" stroke-width="2" opacity=".2"/><path d="M60 13v10M60 67v10M92 45H82M38 45H28" stroke="#F2A93B" stroke-width="2" stroke-linecap="round"/></svg>
+              <div class="h-title" style="margin-top:22px; font-size:19px;">Watched the whole trip</div>
+              <div class="txt-sm" style="margin-top:8px;">Once you're at sea, ORCA keeps monitoring weather, waves and warnings — and alerts you the moment something changes.</div>
+            </div>
+            <div class="pad">
+              <div class="dots" style="margin-bottom:18px;"><span></span><span class="on"></span><span></span></div>
+              <button class="btn primary" onclick="go('onboard3')">Next</button>
+              <div style="text-align:center; margin-top:12px;"><span class="txt-xs" style="cursor:pointer;" onclick="go('login')">Skip</span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ ONBOARDING 3 ============ -->
+        <section class="screen" id="scr-onboard3">
+          <div style="height:100%; display:flex; flex-direction:column;">
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 34px; text-align:center;">
+              <svg width="110" height="90" viewBox="0 0 110 90" fill="none"><path d="M55 6L14 78h82L55 6z" fill="#FDECEB" stroke="#EF5B57" stroke-width="3"/><path d="M55 34v22M55 64v4" stroke="#EF5B57" stroke-width="4" stroke-linecap="round"/></svg>
+              <div class="h-title" style="margin-top:22px; font-size:19px;">Help, when it matters</div>
+              <div class="txt-sm" style="margin-top:8px;">One tap for SOS. Your location, vessel and situation are shared instantly — no repeating yourself under stress.</div>
+            </div>
+            <div class="pad">
+              <div class="dots" style="margin-bottom:18px;"><span></span><span></span><span class="on"></span></div>
+              <button class="btn primary" onclick="go('login')">Get started</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ LOGIN / FIRST-TIME PROFILE ============ -->
+        <section class="screen" id="scr-login">
+          <div class="pad" style="padding-top:26px;">
+            <div class="h-title" style="font-size:21px;">Set up your profile</div>
+            <div class="txt-sm" style="margin-top:6px;">Just enough to keep you safe — nothing more.</div>
+
+            <div class="card section-gap">
+              <div class="eyebrow-sm">Name</div>
+              <div style="margin-top:8px; background:var(--surface-alt); border-radius:9px; padding:11px 12px; font-size:13px; color:var(--ink);">Ramesh Koli</div>
+            </div>
+            <div class="card">
+              <div class="eyebrow-sm">Preferred language</div>
+              <div class="scrollx section-gap" style="margin-top:8px;">
+                <span class="chip on">English</span><span class="chip">हिंदी</span><span class="chip">मराठी</span><span class="chip">தமிழ்</span>
+              </div>
+            </div>
+            <div class="card">
+              <div class="eyebrow-sm">Vessel type</div>
+              <div class="scrollx" style="margin-top:8px;">
+                <span class="chip on">Small motorboat</span><span class="chip">Trawler</span><span class="chip">Catamaran</span>
+              </div>
+            </div>
+            <div class="card">
+              <div class="eyebrow-sm">Emergency contact</div>
+              <div style="margin-top:8px; background:var(--surface-alt); border-radius:9px; padding:11px 12px; font-size:13px; color:var(--ink);">+91 98••• ••452 · Wife</div>
+              <div class="txt-xs" style="margin-top:8px;">Used only if you trigger SOS or ORCA detects an unresolved emergency.</div>
+            </div>
+            <div class="card">
+              <div class="row">
+                <div class="col"><span class="eyebrow-sm">Home port (optional)</span><span class="txt-sm">Ratnagiri Harbour</span></div>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="var(--ink-faint)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+              </div>
+            </div>
+            <button class="btn primary section-gap" onclick="go('home')">Continue to ORCA</button>
+          </div>
+        </section>
+
+        <!-- ============ HOME ============ -->
+        <section class="screen" id="scr-home">
+          <div class="app-header">
+            <div class="mark">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M2 16c3-6 6-6 9 0s6 6 9 0" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><path d="M2 10c3-6 6-6 9 0s6 6 9 0" stroke="#fff" stroke-width="2.4" stroke-linecap="round" opacity=".6"/></svg>
+            </div>
+            <div class="wordmark">ORCA<small>Marine Intelligence &amp; Safety</small></div>
+            <div class="hicon" style="position:relative;" onclick="go('alerts')">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+              <span style="position:absolute; top:5px; right:6px; width:8px; height:8px; border-radius:50%; background:var(--orange); border:1.5px solid var(--surface);"></span>
+            </div>
+            <div class="avatar" style="cursor:pointer;" onclick="go('profile')">RK</div>
+          </div>
+          <div class="demo-ribbon">Demo mode · simulated conditions for Ratnagiri coast</div>
+          <div class="pad">
+            <div class="txt-xs">Namaste,</div>
+            <div class="h-title" style="font-size:21px; margin-top:1px;">Ramesh 👋</div>
+
+            <div class="hero-status section-gap">
+              <svg class="hs-waves" viewBox="0 0 400 40" preserveAspectRatio="none"><path d="M0 20c40-16 80-16 120 0s80 16 120 0 80-16 120 0 40 8 40 8V40H0z" fill="#fff" opacity=".5"/></svg>
+              <div class="hs-top">
+                <div class="col">
+                  <span class="eyebrow-sm" style="color:var(--teal-deep);">Marine conditions</span>
+                  <span class="h-title" style="font-size:19px; margin-top:2px;">Moderate risk</span>
+                  <span class="txt-xs" style="margin-top:6px;">Updated 4 min ago · Ratnagiri coast <span class="tag sim" style="margin-left:4px;">SIM</span></span>
+                </div>
+                <span class="badge yellow"><span class="dot"></span>YELLOW</span>
+              </div>
+              <div class="hs-metrics">
+                <div class="hs-metric">
+                  <svg class="m-icon icon" viewBox="0 0 24 24" fill="none" stroke="var(--teal-deep)" stroke-width="2"><path d="M3 8h11a3 3 0 100-6"/><path d="M3 16h15a3 3 0 110 6"/></svg>
+                  <div class="txt-xs">Wind</div>
+                  <div class="h-title" style="font-size:14px; margin-top:1px;">18 km/h</div>
+                </div>
+                <div class="hs-metric">
+                  <svg class="m-icon icon" viewBox="0 0 24 24" fill="none" stroke="var(--teal-deep)" stroke-width="2"><path d="M2 12c3-4 6-4 9 0s6 4 9 0M2 18c3-4 6-4 9 0s6 4 9 0"/></svg>
+                  <div class="txt-xs">Waves</div>
+                  <div class="h-title" style="font-size:14px; margin-top:1px;">1.4 m</div>
+                </div>
+                <div class="hs-metric" style="cursor:pointer;" onclick="go('alerts')">
+                  <svg class="m-icon icon" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+                  <div class="txt-xs">Alerts</div>
+                  <div class="h-title" style="font-size:14px; margin-top:1px; color:var(--orange);">1 active</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ask-card section-gap" onclick="go('chat')">
+              <div class="row">
+                <span class="h-title" style="font-size:14.5px;">Ask ORCA anything</span>
+                <span class="tag real">GROUNDED</span>
+              </div>
+              <div class="ask-input">
+                <span class="txt-sm" style="color:var(--ink-faint); flex:1;">Can I go fishing tomorrow?</span>
+                <div class="ask-send">
+                  <svg class="icon" style="width:14px;height:14px;" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </div>
+              </div>
+              <div class="scrollx" style="margin-top:10px;">
+                <span class="chip">Safe areas near me</span><span class="chip">Any cyclone alert?</span><span class="chip">Best route today</span>
+              </div>
+            </div>
+
+            <div class="row section-gap">
+              <div class="h-title" style="font-size:14.5px;">Quick access</div>
+            </div>
+            <div class="quick-grid" style="margin-top:9px;">
+              <div class="quick-tile" onclick="go('plan')">
+                <div class="qt-ico" style="background:var(--teal-tint);">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="var(--teal-deep)" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+                </div>
+                <div class="qt-label">7-Day Plan</div>
+              </div>
+              <div class="quick-tile" onclick="go('map')">
+                <div class="qt-ico" style="background:var(--brass-tint);">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="2"><path d="M9 3L3 6v15l6-3 6 3 6-3V3l-6 3-6-3z"/></svg>
+                </div>
+                <div class="qt-label">Map</div>
+              </div>
+              <div class="quick-tile" onclick="go('history')">
+                <div class="qt-ico" style="background:var(--green-tint);">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5M12 7v5l4 2"/></svg>
+                </div>
+                <div class="qt-label">History</div>
+              </div>
+            </div>
+
+            <div class="card section-gap" style="border-left:3px solid var(--teal); cursor:pointer;" onclick="go('trip')">
+              <div class="row">
+                <div class="col">
+                  <span class="eyebrow-sm">Active trip</span>
+                  <span class="h-title" style="font-size:14px;">Fishing Zone B · started 6:00 AM</span>
+                </div>
+                <span class="badge yellow"><span class="dot"></span>YELLOW</span>
+              </div>
+              <div class="txt-xs" style="margin-top:8px;">ORCA is monitoring continuously — tap to view live dashboard</div>
+            </div>
+
+            <div class="card">
+              <div class="row">
+                <span class="eyebrow-sm">Community — Ratnagiri coast</span>
+                <span class="txt-xs" style="color:var(--teal-deep); font-weight:700; cursor:pointer;" onclick="go('community')">View all</span>
+              </div>
+              <div class="txt-sm" style="margin-top:8px;">"Waves picking up near Zone B, came in early." — <b>Suresh P.</b> · 12 min ago</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ ASK ORCA / CHAT ============ -->
+        <section class="screen" id="scr-chat">
+          <div class="topbar"><div class="backbtn" onclick="go('home')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div><h3>Ask ORCA</h3>
+            <div class="iconbtn" onclick="toggleSheet('voice',true)"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2"><path d="M12 15a3 3 0 003-3V6a3 3 0 00-6 0v6a3 3 0 003 3z"/><path d="M19 11a7 7 0 01-14 0M12 19v3"/></svg></div>
+          </div>
+          <div class="pad">
+            <div class="bubble-row right"><div class="bubble-user">Can I go fishing tomorrow morning?</div></div>
+
+            <div class="card section-gap" style="border-left:3px solid var(--green); cursor:pointer;" onclick="go('risk')">
+              <span class="badge green"><span class="dot"></span>LOW RISK</span>
+              <div class="h-title" style="margin-top:9px; font-size:14px;">Recommended: Go</div>
+              <div class="txt-sm" style="margin-top:7px;">
+                • Wind favourable, waves in range<br>
+                • No active marine warning<br>
+                • Return window stays favourable
+              </div>
+              <div class="txt-xs" style="margin-top:8px;">Watch: conditions may shift after 3 PM</div>
+              <div class="row" style="margin-top:10px;">
+                <span class="txt-xs">Updated 10:42 AM</span>
+                <span class="txt-xs" style="color:var(--teal); font-weight:700;">View full assessment →</span>
+              </div>
+            </div>
+
+            <div class="bubble-row right section-gap"><div class="bubble-user">What about the afternoon?</div></div>
+            <div class="txt-xs" style="margin-top:8px;">ORCA remembers your location and trip context — no need to repeat it.</div>
+
+            <div class="card section-gap">
+              <div class="badge yellow" style="margin-bottom:8px;"><span class="dot"></span>MODERATE — WATCH</div>
+              <div class="txt-sm">Afternoon wind is forecast to rise past 3 PM and a return-window risk opens up after 4 PM. If you go, plan to be back before then.</div>
+            </div>
+
+            <div class="bubble-row right section-gap"><div class="bubble-user">Kal subah 6 baje jana thik hai kya?</div></div>
+            <div class="card section-gap">
+              <div class="row" style="margin-bottom:6px;"><span class="tag real">हिंदी detected</span></div>
+              <div class="txt-sm">हां, कल सुबह 6 बजे जाना सुरक्षित है — हवा और लहरें सामान्य सीमा में हैं। दोपहर 3 बजे के बाद मौसम बदल सकता है, उससे पहले लौट आएं।</div>
+            </div>
+          </div>
+          <div class="pad" style="padding-top:0; position:sticky; bottom:0; background:var(--surface-alt);">
+            <div class="row" style="background:var(--surface); border:1px solid var(--line); border-radius:24px; padding:9px 9px 9px 15px;">
+              <span class="txt-xs" style="color:var(--ink-faint);">Message ORCA…</span>
+              <div style="display:flex; gap:6px;">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="var(--ink-faint)" stroke-width="2"><path d="M12 15a3 3 0 003-3V6a3 3 0 00-6 0v6a3 3 0 003 3z"/><path d="M19 11a7 7 0 01-14 0M12 19v3"/></svg>
+                <svg class="icon" viewBox="0 0 24 24" fill="var(--teal)"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ RISK RESULT ============ -->
+        <section class="screen" id="scr-risk">
+          <div class="topbar"><div class="backbtn" onclick="go('chat')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div><h3>Risk assessment</h3></div>
+          <div class="pad">
+            <div class="gauge-wrap">
+              <div class="dial-wrap">
+                <svg viewBox="0 0 168 168">
+                  <circle cx="84" cy="84" r="72" fill="none" stroke="var(--paper-deep)" stroke-width="12"/>
+                  <circle cx="84" cy="84" r="72" fill="none" stroke="var(--green)" stroke-width="12" stroke-linecap="round" stroke-dasharray="452" stroke-dashoffset="345"/>
+                  <circle cx="84" cy="84" r="72" fill="none" stroke="var(--line)" stroke-width="1" stroke-dasharray="1 12.6" transform="rotate(0 84 84)"/>
+                </svg>
+                <div class="dial-center">
+                  <div class="lvl" style="color:var(--green);">GREEN</div>
+                  <div class="lbl">Low risk · score 18</div>
+                </div>
+              </div>
+              <div class="h-title" style="margin-top:13px; font-size:18px;">Recommended: Go</div>
+              <div class="txt-xs" style="margin-top:5px;">CONFIDENCE 0.91 · UPDATED 10:42</div>
+            </div>
+
+            <div class="card">
+              <div class="eyebrow-sm">Why</div>
+              <div class="txt-sm" style="margin-top:7px;">
+                1. Wind conditions favourable (18 km/h)<br>
+                2. Wave height within acceptable range (1.4 m)<br>
+                3. No active severe marine warning<br>
+                4. Return window remains favourable until 3 PM
+              </div>
+            </div>
+
+            <div class="row" style="gap:9px; margin-top:11px;">
+              <div class="card" style="flex:1;"><div class="txt-xs">Weather</div><div class="txt-sm" style="font-weight:700; color:var(--ink); margin-top:2px;">Clear, 29°C</div></div>
+              <div class="card" style="flex:1;"><div class="txt-xs">Ocean</div><div class="txt-sm" style="font-weight:700; color:var(--ink); margin-top:2px;">1.4m swell</div></div>
+            </div>
+
+            <div class="card" style="border-left:3px solid var(--yellow);">
+              <div class="eyebrow-sm" style="color:var(--yellow)">Return window</div>
+              <div class="txt-sm" style="margin-top:5px;">Deteriorates after 3 PM — plan to return before then.</div>
+            </div>
+
+            <div class="card" style="cursor:pointer;" onclick="toggleSheet('explain',true)">
+              <div class="row">
+                <span class="h-title" style="font-size:13.5px;">Why should I trust this?</span>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+              </div>
+              <div class="txt-xs" style="margin-top:4px;">See the reasoning behind this recommendation</div>
+            </div>
+
+            <div class="card" style="cursor:pointer;" onclick="toggleSheet('evidence',true)">
+              <div class="row">
+                <span class="h-title" style="font-size:13.5px;">View evidence &amp; sources</span>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+              </div>
+              <div class="txt-xs" style="margin-top:4px;">4 SOURCES · LAST VERIFIED 10:42</div>
+            </div>
+
+            <div class="card" style="cursor:pointer;" onclick="go('trace')">
+              <div class="row">
+                <span class="h-title" style="font-size:13.5px;">See how ORCA reasoned this out</span>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+              </div>
+              <div class="txt-xs" style="margin-top:4px;">AGENT TRACE · 7 AGENTS · 2 TOOL CALLS PARALLEL</div>
+            </div>
+
+            <button class="btn primary section-gap" onclick="go('plan')">Start trip with this plan</button>
+          </div>
+        </section>
+
+        <!-- ============ MAP ============ -->
+        <section class="screen" id="scr-map">
+          <div class="topbar"><h3>Map</h3><div class="iconbtn" onclick="toggleSheet('layers',true)"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2"><path d="M12 2l9 5-9 5-9-5 9-5z"/><path d="M3 12l9 5 9-5M3 17l9 5 9-5"/></svg></div></div>
+          <div class="mapview" style="height:calc(100% - 0px); border-radius:0; border:none;">
+            <div class="grid"></div><div class="land"></div><div class="route"></div>
+            <div class="pin you"></div><div class="ripple"></div>
+            <div class="pin zone"></div><div class="pin hazard"></div><div class="pin shelter"></div>
+            <div style="position:absolute; top:14px; left:14px; right:14px;">
+              <div class="scrollx">
+                <span class="chip on">Route</span><span class="chip">PFZ</span><span class="chip">Waves</span><span class="chip">Wind</span><span class="chip">Geofence</span><span class="chip">SST</span>
+              </div>
+            </div>
+            <div class="card" style="position:absolute; bottom:88px; left:14px; right:14px;">
+              <div class="row">
+                <div class="col"><span class="eyebrow-sm">Nearest safe location</span><span class="txt-sm" style="font-weight:700; color:var(--ink);">Ratnagiri Harbour</span></div>
+                <span class="txt-xs" style="text-align:right;">4.2 km<br>~22 min</span>
+              </div>
+            </div>
+            <div style="position:absolute; bottom:16px; left:14px; right:14px; display:flex; gap:8px;">
+              <button class="btn ghost sm" style="background:var(--surface);" onclick="go('trip')">Active trip</button>
+              <button class="btn primary sm" onclick="toggleSheet('safeloc',true)">Find shelter</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ ACTIVE TRIP DASHBOARD ============ -->
+        <section class="screen" id="scr-trip">
+          <div class="topbar row"><h3>Active trip</h3><span class="badge yellow"><span class="dot"></span>YELLOW</span></div>
+          <div class="pad">
+            <div class="mapview">
+              <div class="grid"></div><div class="land"></div><div class="route"></div>
+              <div class="pin you"></div><div class="ripple"></div><div class="pin zone"></div>
+            </div>
+            <div class="row" style="margin-top:11px; gap:9px;">
+              <div class="card" style="flex:1; text-align:center; padding:10px;"><div class="txt-xs">Wind</div><div class="h-title" style="font-size:14px;">27 km/h ↑</div></div>
+              <div class="card" style="flex:1; text-align:center; padding:10px;"><div class="txt-xs">Waves</div><div class="h-title" style="font-size:14px;">1.9 m ↑</div></div>
+              <div class="card" style="flex:1; text-align:center; padding:10px;"><div class="txt-xs">Elapsed</div><div class="h-title" style="font-size:14px;">5h 15m</div></div>
+            </div>
+            <div class="card section-gap" style="border-left:3px solid var(--yellow);">
+              <div class="eyebrow-sm" style="color:var(--yellow);">Geofence</div>
+              <div class="txt-sm" style="margin-top:4px;">2.1 km from restricted zone boundary</div>
+            </div>
+            <div class="card">
+              <div class="row"><span class="eyebrow-sm">Return window</span><span class="txt-xs">Updated 1 min ago</span></div>
+              <div class="txt-sm" style="margin-top:5px;">Conditions expected to worsen after 3 PM — begin heading back by 2:15 PM.</div>
+            </div>
+            <div class="card" style="cursor:pointer;" onclick="go('alerts')">
+              <div class="row"><span class="h-title" style="font-size:13.5px;">Trip alerts (2)</span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+            </div>
+            <div class="row" style="gap:9px; margin-top:12px;">
+              <button class="btn ghost" onclick="toggleSheet('safeloc',true)">Find shelter</button>
+              <button class="btn ghost" onclick="go('map')">Safe route</button>
+            </div>
+            <button class="btn sos section-gap" onclick="go('sosconfirm')">
+              <svg class="icon" viewBox="0 0 24 24" fill="#fff"><path d="M12 2L2 21h20L12 2z"/></svg> SOS — Emergency
+            </button>
+            <button class="btn ghost-red" style="margin-top:9px;" onclick="toggleSheet('endtrip',true)">End trip</button>
+          </div>
+        </section>
+
+        <!-- ============ 7-DAY PLAN ============ -->
+        <section class="screen" id="scr-plan">
+          <div class="topbar"><div class="backbtn" onclick="go('home')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div><h3>7-Day Plan</h3></div>
+          <div class="pad">
+            <div class="card" style="background:var(--teal-tint); border-color:transparent;">
+              <div class="txt-sm" style="color:var(--teal-deep);">This plan updates automatically as conditions change — you won't need to ask again each day.</div>
+            </div>
+
+            <div class="ask-card section-gap" onclick="go('chat')">
+              <div class="row">
+                <span class="h-title" style="font-size:14.5px;">Ask ORCA about this plan</span>
+                <span class="tag real">GROUNDED</span>
+              </div>
+              <div class="ask-input">
+                <span class="txt-sm" style="color:var(--ink-faint); flex:1;">What about Day 3 conditions?</span>
+                <div class="ask-send">
+                  <svg class="icon" style="width:14px;height:14px;" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </div>
+              </div>
+              <div class="scrollx" style="margin-top:10px;">
+                <span class="chip">Move Day 3 to Zone D</span><span class="chip">Any cyclone alert?</span><span class="chip">Safer return time?</span>
+              </div>
+            </div>
+
+            <div class="row section-gap">
+              <div class="h-title" style="font-size:14.5px;">Day-by-day</div>
+            </div>
+            <div class="scrollx" id="planDays">
+              <span class="chip on" onclick="selectDay(this,1)">Day 1</span>
+              <span class="chip" onclick="selectDay(this,2)">Day 2</span>
+              <span class="chip" onclick="selectDay(this,3)">Day 3</span>
+              <span class="chip" onclick="selectDay(this,4)">Day 4</span>
+              <span class="chip" onclick="selectDay(this,5)">Day 5</span>
+              <span class="chip" onclick="selectDay(this,6)">Day 6</span>
+              <span class="chip" onclick="selectDay(this,7)">Day 7</span>
+            </div>
+
+            <div id="planDetail1">
+              <div class="card section-gap">
+                <div class="row"><span class="eyebrow-sm">Day 1 · Tomorrow</span><span class="badge green"><span class="dot"></span>GO</span></div>
+                <div class="txt-sm" style="margin-top:7px;">Fishing window 6:00 AM – 2:00 PM · Zone B<br>Return before 3:00 PM deterioration window</div>
+              </div>
+            </div>
+            <div id="planDetail3" style="display:none;">
+              <div class="card section-gap" style="border-left:3px solid var(--orange);">
+                <div class="row"><span class="eyebrow-sm">Day 3</span><span class="badge orange"><span class="dot"></span>RECONSIDER</span></div>
+                <div class="txt-sm" style="margin-top:7px;">Conditions have changed since this plan was made. Consider postponing or moving to Zone D.</div>
+                <button class="btn ghost sm section-gap">View alternative area</button>
+              </div>
+            </div>
+            <div id="planDetailOther" style="display:none;">
+              <div class="card section-gap">
+                <div class="row"><span class="eyebrow-sm">Forecast</span><span class="badge green"><span class="dot"></span>GO</span></div>
+                <div class="txt-sm" style="margin-top:7px;">No significant risk currently forecast. ORCA will reassess closer to the date.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ ALERT CENTER ============ -->
+        <section class="screen" id="scr-alerts">
+          <div class="topbar"><h3>Alerts</h3><span class="txt-xs" style="color:var(--teal); font-weight:700; cursor:pointer;" onclick="toggleSheet('alertsettings',true)">Manage</span></div>
+          <div class="pad" style="display:flex; flex-direction:column; gap:10px;">
+            <div class="timeline-item">
+              <div class="timeline-rail"><div class="tdot" style="background:var(--orange);"></div><div class="tline"></div></div>
+              <div class="card" style="flex:1; cursor:pointer;" onclick="go('trip')">
+                <div class="row"><span class="badge orange"><span class="dot"></span>WARNING</span><span class="txt-xs">12:00 PM</span></div>
+                <div class="txt-sm" style="margin-top:7px; font-weight:600; color:var(--ink);">Marine conditions deteriorating near your route</div>
+                <div class="txt-xs" style="margin-top:5px;">Wind and wave conditions rising · tap to view trip</div>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-rail"><div class="tdot" style="background:var(--yellow);"></div><div class="tline"></div></div>
+              <div class="card" style="flex:1;">
+                <div class="row"><span class="badge yellow"><span class="dot"></span>ADVISORY</span><span class="txt-xs">11:15 AM</span></div>
+                <div class="txt-sm" style="margin-top:7px; font-weight:600; color:var(--ink);">Wind speed trending upward (grouped: 4 updates)</div>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-rail"><div class="tdot" style="background:var(--teal);"></div><div class="tline" style="background:transparent;"></div></div>
+              <div class="card" style="flex:1; opacity:.6;">
+                <div class="row"><span class="badge" style="background:var(--teal-tint); color:var(--teal);"><span class="dot"></span>INFO</span><span class="txt-xs">9:32 AM</span></div>
+                <div class="txt-sm" style="margin-top:7px; font-weight:600; color:var(--ink);">Trip started — Fishing Zone B</div>
+                <div class="txt-xs" style="margin-top:4px;">Acknowledged</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ COMMUNITY ============ -->
+        <section class="screen" id="scr-community">
+          <div class="topbar"><h3>Community</h3><div class="iconbtn" onclick="toggleSheet('newpost',true)"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></div></div>
+          <div class="pad">
+            <div class="segment">
+              <div class="seg on" onclick="segSwitch(this,'feed')">Feed</div>
+              <div class="seg" onclick="segSwitch(this,'polls')">Polls</div>
+            </div>
+
+            <div id="communityFeed" class="section-gap">
+              <div class="card">
+                <div class="row"><div class="row" style="gap:8px;"><div class="avatar">SP</div><div class="col"><span class="txt-sm" style="font-weight:700; color:var(--ink);">Suresh P.</span><span class="txt-xs">Verified · 12 min ago</span></div></div><span class="tag" style="background:var(--green-tint); color:var(--green);">TRUSTED</span></div>
+                <div class="txt-sm" style="margin-top:9px;">Waves picking up near Zone B, came in early. Sky looks clear otherwise.</div>
+                <div class="row" style="margin-top:9px;"><span class="txt-xs">👍 14 found helpful</span><span class="txt-xs" style="color:var(--teal); font-weight:700;">Report</span></div>
+              </div>
+              <div class="card">
+                <div class="row"><div class="row" style="gap:8px;"><div class="avatar">AK</div><div class="col"><span class="txt-sm" style="font-weight:700; color:var(--ink);">Anil K.</span><span class="txt-xs">Unverified · 40 min ago</span></div></div><span class="tag sim">OBSERVATION</span></div>
+                <div class="txt-sm" style="margin-top:9px;">Good catch near the harbour mouth this morning.</div>
+                <div class="row" style="margin-top:9px;"><span class="txt-xs">👍 6 found helpful</span><span class="txt-xs" style="color:var(--teal); font-weight:700;">Report</span></div>
+              </div>
+              <div class="card" style="border-left:3px solid var(--ink-faint);">
+                <div class="txt-xs">Community reports are observations, not official warnings. Official advisories always take priority.</div>
+              </div>
+            </div>
+
+            <div id="communityPolls" class="section-gap" style="display:none;">
+              <div class="card">
+                <div class="h-title" style="font-size:13.5px;">How are sea conditions near Zone B right now?</div>
+                <div class="txt-xs" style="margin-top:4px;">42 votes · expires in 3h</div>
+                <div class="col" style="margin-top:10px; gap:8px;">
+                  <div class="row" style="background:var(--surface-alt); border-radius:8px; padding:9px 12px;"><span class="txt-sm">Calm</span><span class="txt-xs" style="font-weight:700;">18%</span></div>
+                  <div class="row" style="background:var(--yellow-tint); border-radius:8px; padding:9px 12px;"><span class="txt-sm">Moderate</span><span class="txt-xs" style="font-weight:700;">55%</span></div>
+                  <div class="row" style="background:var(--orange-tint); border-radius:8px; padding:9px 12px;"><span class="txt-sm">Rough</span><span class="txt-xs" style="font-weight:700;">27%</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ EMERGENCY MODE / SOS ============ -->
+        <section class="screen" id="scr-emergency">
+          <div class="topbar" style="background:var(--red-tint); border-bottom-color:transparent;">
+            <svg class="icon-lg" viewBox="0 0 24 24" fill="var(--red)"><path d="M12 2L2 21h20L12 2z"/></svg>
+            <h3 style="color:var(--red);">Emergency mode active</h3>
+            <div class="iconbtn" style="background:var(--surface-2);" onclick="toggleSheet('cancelsos',true)"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></div>
+          </div>
+          <div class="pad">
+            <div class="mapview" style="height:130px;">
+              <div class="grid"></div><div class="land"></div><div class="pin you"></div><div class="ripple"></div>
+            </div>
+            <div class="card section-gap">
+              <div class="txt-xs">Latest known position</div>
+              <div class="txt-sm" style="font-weight:700; color:var(--ink); margin-top:2px;">17.02°N, 73.28°E · captured 12:30 PM</div>
+            </div>
+            <div class="row" style="gap:9px; margin-top:10px;">
+              <div class="card" style="flex:1;"><div class="txt-xs">People onboard</div><div class="txt-sm" style="font-weight:700; margin-top:2px;">3</div></div>
+              <div class="card" style="flex:1;"><div class="txt-xs">Emergency type</div><div class="txt-sm" style="font-weight:700; margin-top:2px;">Engine failure</div></div>
+            </div>
+            <div class="card">
+              <div class="row"><span class="eyebrow-sm">Status</span><span class="badge orange"><span class="dot"></span>HELP REQUESTED</span></div>
+              <div class="col" style="margin-top:11px; gap:9px;">
+                <div class="row"><span class="txt-xs">SOS triggered</span><span class="txt-xs" style="font-weight:700;">12:30 PM ✓</span></div>
+                <div class="row"><span class="txt-xs">Location captured</span><span class="txt-xs" style="font-weight:700;">12:30 PM ✓</span></div>
+                <div class="row"><span class="txt-xs">Rescue assigned</span><span class="txt-xs" style="font-weight:700; color:var(--teal); cursor:pointer;" onclick="go('rescue')">View →</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="pad" style="padding-top:0; display:flex; flex-direction:column; gap:9px;">
+            <button class="btn sos">Contact emergency service</button>
+            <button class="btn ghost-red">Share location</button>
+            <button class="btn ghost-red">Call emergency contact</button>
+            <button class="btn ghost" onclick="toggleSheet('safeloc',true)">View safe location</button>
+          </div>
+        </section>
+
+        <!-- ============ RESCUE MAP ============ -->
+        <section class="screen" id="scr-rescue">
+          <div class="topbar"><div class="backbtn" onclick="go('emergency')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div><h3>Rescue status</h3></div>
+          <div class="mapview" style="height:250px; border-radius:0; border:none;">
+            <div class="grid"></div><div class="land"></div>
+            <div class="pin you"></div><div class="ripple"></div><div class="pin rescue"></div>
+            <div style="position:absolute; top:14px; left:14px;"><span class="tag sim">SIM — DEMO RESCUE DATA</span></div>
+          </div>
+          <div class="pad">
+            <div class="card">
+              <div class="row"><span class="eyebrow-sm">Rescue status</span><span class="badge orange"><span class="dot"></span>ASSIGNED</span></div>
+              <div class="txt-sm" style="margin-top:9px;">
+                <b style="color:var(--ink);">Coast Guard Unit 4</b> · ETA 14 min<br>
+                Prototype simulation for demo purposes.
+              </div>
+            </div>
+            <div class="txt-xs" style="margin-top:12px; text-align:center;">Live rescue-unit location requires authorized agency integration. This screen shows a labelled simulation for demonstration.</div>
+          </div>
+        </section>
+
+        <!-- ============ TRIP HISTORY ============ -->
+        <section class="screen" id="scr-history">
+          <div class="topbar"><h3>Trip history</h3></div>
+          <div class="pad" style="display:flex; flex-direction:column; gap:10px;">
+            <div class="card" style="cursor:pointer;" onclick="toggleSheet('summary',true)">
+              <div class="row"><span class="h-title" style="font-size:14px;">Fishing Zone B</span><span class="badge green"><span class="dot"></span>SAFE</span></div>
+              <div class="txt-xs" style="margin-top:5px;">Yesterday · 6:00 AM – 2:40 PM · 8h 40m</div>
+              <div class="txt-sm" style="margin-top:6px;">2 advisories, 0 emergencies · 14.2 km round trip</div>
+            </div>
+            <div class="card">
+              <div class="row"><span class="h-title" style="font-size:14px;">Fishing Zone A</span><span class="badge orange"><span class="dot"></span>1 WARNING</span></div>
+              <div class="txt-xs" style="margin-top:5px;">3 days ago · 5:30 AM – 1:10 PM · 7h 40m</div>
+              <div class="txt-sm" style="margin-top:6px;">Wind advisory at 11:15 AM · returned safely</div>
+            </div>
+            <div class="card">
+              <div class="row"><span class="h-title" style="font-size:14px;">Fishing Zone C</span><span class="badge green"><span class="dot"></span>SAFE</span></div>
+              <div class="txt-xs" style="margin-top:5px;">6 days ago · 6:15 AM – 12:50 PM · 6h 35m</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ PROFILE ============ -->
+        <section class="screen" id="scr-profile">
+          <div class="topbar"><h3>Profile</h3></div>
+          <div class="pad">
+            <div class="row" style="gap:12px;">
+              <div class="avatar" style="width:52px; height:52px; font-size:17px;">RK</div>
+              <div class="col"><span class="h-title" style="font-size:16px;">Ramesh Koli</span><span class="txt-xs">Ratnagiri Harbour · Small motorboat</span></div>
+            </div>
+
+            <div class="card section-gap" style="cursor:pointer;" onclick="go('history')">
+              <div class="row"><span class="txt-sm" style="font-weight:600; color:var(--ink);">Trip history</span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="var(--ink-faint)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+            </div>
+            <div class="card" style="cursor:pointer;" onclick="go('community')">
+              <div class="row"><span class="txt-sm" style="font-weight:600; color:var(--ink);">My community posts</span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="var(--ink-faint)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+            </div>
+            <div class="card" style="cursor:pointer;" onclick="toggleSheet('contacts',true)">
+              <div class="row"><span class="txt-sm" style="font-weight:600; color:var(--ink);">Emergency contacts</span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="var(--ink-faint)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+            </div>
+            <div class="card" style="cursor:pointer;" onclick="go('settings')">
+              <div class="row"><span class="txt-sm" style="font-weight:600; color:var(--ink);">Settings</span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="var(--ink-faint)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+            </div>
+            <div class="card" style="cursor:pointer;" onclick="toggleSheet('datasrc',true)">
+              <div class="row"><span class="txt-sm" style="font-weight:600; color:var(--ink);">Data sources &amp; audit log</span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="var(--ink-faint)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+            </div>
+            <button class="btn ghost-red section-gap" onclick="go('splash')">Log out</button>
+          </div>
+        </section>
+
+        <!-- ============ SETTINGS ============ -->
+        <section class="screen" id="scr-settings">
+          <div class="topbar"><div class="backbtn" onclick="go('profile')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div><h3>Settings</h3></div>
+          <div class="pad">
+            <div class="eyebrow-sm">Language</div>
+            <div class="scrollx section-gap" style="margin-top:8px;">
+              <span class="chip on">English</span><span class="chip">हिंदी</span><span class="chip">मराठी</span><span class="chip">தமிழ்</span><span class="chip">বাংলা</span>
+            </div>
+            <div class="hr"></div>
+            <div class="row"><span class="txt-sm" style="font-weight:600; color:var(--ink);">Push notifications</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="knob"></div></div></div>
+            <div class="row section-gap"><span class="txt-sm" style="font-weight:600; color:var(--ink);">Voice input</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="knob"></div></div></div>
+            <div class="row section-gap"><span class="txt-sm" style="font-weight:600; color:var(--ink);">Share location with community</span><div class="toggle" onclick="this.classList.toggle('on')"><div class="knob"></div></div></div>
+            <div class="row section-gap"><span class="txt-sm" style="font-weight:600; color:var(--ink);">Low-data / offline mode</span><div class="toggle" onclick="this.classList.toggle('on')"><div class="knob"></div></div></div>
+            <div class="hr"></div>
+            <div class="eyebrow-sm">Units</div>
+            <div class="segment section-gap">
+              <div class="seg on">Metric (km/h, m)</div>
+              <div class="seg">Imperial (mph, ft)</div>
+            </div>
+            <div class="hr"></div>
+            <div class="card"><div class="txt-xs">APP V1.0 · PS-26176 · ISRO</div></div>
+            <button class="btn ghost section-gap" onclick="go('demo')">Open demo control panel</button>
+          </div>
+        </section>
+
+        <!-- ============ AGENT OBSERVABILITY / TRACE ============ -->
+        <section class="screen" id="scr-trace">
+          <div class="topbar"><div class="backbtn" onclick="go('risk')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div><h3>Agent trace</h3><span class="tag sim">DEV VIEW</span></div>
+          <div class="pad">
+            <div class="txt-xs" style="font-size:11.5px; line-height:1.6;">This is not a chatbot answer — it's the actual orchestration run behind "Can I go fishing tomorrow morning?". Nothing here is invented by the language model; every value comes from a structured agent contract.</div>
+
+            <div class="section-gap" style="display:flex; flex-direction:column; gap:0;">
+              <div class="trace-node">
+                <div class="trace-rail"><div class="tnode" style="background:var(--teal);"></div><div class="tconn"></div></div>
+                <div class="card" style="flex:1; margin-top:0;"><div class="row"><span class="txt-sm" style="font-weight:700; color:var(--ink);">Planner / Orchestrator</span><span class="txt-xs">4 ms</span></div><div class="txt-xs" style="margin-top:5px;">Intent: SAFETY_QUERY · Entities: time=tomorrow AM · Dispatches 7 agents in parallel</div></div>
+              </div>
+              <div class="trace-node">
+                <div class="trace-rail"><div class="tnode" style="background:var(--brass);"></div><div class="tconn"></div></div>
+                <div class="card" style="flex:1; margin-top:0;"><div class="row"><span class="txt-sm" style="font-weight:700; color:var(--ink);">Context Agent</span><span class="txt-xs">6 ms</span></div><div class="txt-xs" style="margin-top:5px;">Resolved: Ratnagiri coast · vessel=small motorboat · no active trip</div></div>
+              </div>
+              <div class="trace-node">
+                <div class="trace-rail"><div class="tnode" style="background:var(--teal);"></div><div class="tconn"></div></div>
+                <div class="card" style="flex:1; margin-top:0;"><div class="row"><span class="txt-sm" style="font-weight:700; color:var(--ink);">Weather + Ocean + Geospatial + Satellite + Tide</span><span class="tag real" style="margin-left:4px;">PARALLEL</span></div><div class="txt-xs" style="margin-top:5px;">5 tool calls fired concurrently · slowest 340 ms (Satellite/SIM) · 1 conflict flagged (wind speed A vs B)</div></div>
+              </div>
+              <div class="trace-node">
+                <div class="trace-rail"><div class="tnode" style="background:var(--brass);"></div><div class="tconn"></div></div>
+                <div class="card" style="flex:1; margin-top:0;"><div class="row"><span class="txt-sm" style="font-weight:700; color:var(--ink);">Evidence Agent</span><span class="txt-xs">11 ms</span></div><div class="txt-xs" style="margin-top:5px;">Ranked sources by authority + freshness · resolved wind conflict conservatively → 27 km/h used</div></div>
+              </div>
+              <div class="trace-node">
+                <div class="trace-rail"><div class="tnode" style="background:var(--orange);"></div><div class="tconn"></div></div>
+                <div class="card" style="flex:1; margin-top:0;"><div class="row"><span class="txt-sm" style="font-weight:700; color:var(--ink);">Risk Agent</span><span class="txt-xs">deterministic</span></div><div class="txt-xs" style="margin-top:5px;">risk_score=18 · risk_level=GREEN · reassess_when=[new_bulletin, wind_delta&gt;10kmh]</div></div>
+              </div>
+              <div class="trace-node">
+                <div class="trace-rail"><div class="tnode" style="background:var(--teal);"></div></div>
+                <div class="card" style="flex:1; margin-top:0;"><div class="row"><span class="txt-sm" style="font-weight:700; color:var(--ink);">Response Generator (LLM)</span><span class="txt-xs">explain-only</span></div><div class="txt-xs" style="margin-top:5px;">Summarizes structured output in plain English/Hindi — cannot alter risk_level or invent figures</div></div>
+              </div>
+            </div>
+            <div class="card section-gap" style="border-left:3px solid var(--teal);">
+              <div class="eyebrow-sm" style="color:var(--teal);">Why this matters for judging</div>
+              <div class="txt-sm" style="margin-top:5px;">This screen is the proof that ORCA is a tool-grounded multi-agent system, not a single LLM call pretending to know the weather.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ GEOFENCE / RESTRICTED ZONE WARNING ============ -->
+        <section class="screen" id="scr-geofence">
+          <div class="topbar" style="background:var(--orange-tint); border-bottom-color:transparent;"><h3 style="color:var(--orange);">Boundary warning</h3><div class="iconbtn" onclick="go('trip')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+          <div class="mapview" style="height:190px; border-radius:0; border:none;">
+            <div class="grid"></div><div class="land"></div>
+            <div class="pin you"></div><div class="ripple"></div>
+            <div style="position:absolute; left:170px; top:20px; width:2px; height:150px; background:repeating-linear-gradient(var(--red),var(--red) 6px, transparent 6px, transparent 12px); transform:rotate(8deg);"></div>
+          </div>
+          <div class="pad">
+            <div class="card" style="border-left:3px solid var(--orange);">
+              <span class="badge orange"><span class="dot"></span>GEOFENCE_PROXIMITY</span>
+              <div class="txt-sm section-gap" style="margin-top:9px;">You are <b style="color:var(--ink);">1.4 km</b> from an international maritime boundary. Continuing on this heading will cross a restricted zone in roughly <b style="color:var(--ink);">9 minutes</b>.</div>
+            </div>
+            <div class="card"><div class="eyebrow-sm">Recommended action</div><div class="txt-sm" style="margin-top:5px;">Turn to a heading of 240° or follow the suggested safe route back toward Zone B.</div></div>
+            <div class="row" style="gap:9px; margin-top:12px;">
+              <button class="btn ghost" onclick="go('map')">View map</button>
+              <button class="btn primary" onclick="go('trip')">Safe route</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ SOS CONFIRMATION ============ -->
+        <section class="screen" id="scr-sosconfirm">
+          <div style="height:100%; display:flex; flex-direction:column; background:radial-gradient(circle at 50% 12%, #FDECEB 0%, #FFFDFB 55%); color:var(--ink);">
+            <div class="pad" style="text-align:center; padding-top:26px;">
+              <div class="eyebrow-sm" style="color:var(--red);">EMERGENCY ACTIVATION</div>
+              <div class="h-title" style="color:var(--ink); font-size:20px; margin-top:6px;">What's happening?</div>
+              <div class="txt-sm" style="margin-top:4px;">Pick the closest match — you can add detail after help is on the way.</div>
+            </div>
+            <div class="pad" style="display:grid; grid-template-columns:1fr 1fr; gap:9px;">
+              <div class="chip on" style="text-align:center;" onclick="pickEmergency(this)">Engine failure</div>
+              <div class="chip" style="text-align:center;" onclick="pickEmergency(this)">Medical</div>
+              <div class="chip" style="text-align:center;" onclick="pickEmergency(this)">Flooding / capsizing</div>
+              <div class="chip" style="text-align:center;" onclick="pickEmergency(this)">Person overboard</div>
+              <div class="chip" style="text-align:center;" onclick="pickEmergency(this)">Lost / immobilized</div>
+              <div class="chip" style="text-align:center;" onclick="pickEmergency(this)">Not sure / other</div>
+            </div>
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 30px;">
+              <div id="holdBtn" style="width:150px; height:150px; border-radius:50%; background:var(--surface-2); border:3px solid rgba(255,84,112,.35); display:flex; align-items:center; justify-content:center; position:relative; cursor:pointer; box-shadow:0 12px 32px -12px rgba(255,84,112,.45);" onmousedown="startHold()" ontouchstart="startHold()" onmouseup="cancelHold()" ontouchend="cancelHold()" onmouseleave="cancelHold()">
+                <svg id="holdRing" width="150" height="150" style="position:absolute; transform:rotate(-90deg);"><circle cx="75" cy="75" r="68" fill="none" stroke="var(--red)" stroke-width="6" stroke-dasharray="427" stroke-dashoffset="427" id="holdCircle" stroke-linecap="round"/></svg>
+                <span style="font-family:var(--font-mono); font-weight:700; font-size:13px; letter-spacing:.04em; color:var(--red);">HOLD 3s<br>TO SEND SOS</span>
+              </div>
+              <div class="txt-xs" style="margin-top:18px; text-align:center;">Holding, not tapping, prevents an SOS from a pocket-press. Your location is captured the instant this completes.</div>
+            </div>
+            <div class="pad"><button class="btn ghost" onclick="go('trip')">Cancel</button></div>
+          </div>
+        </section>
+
+        <!-- ============ DEMO / SIMULATION CONTROL PANEL ============ -->
+        <section class="screen" id="scr-demo">
+          <div class="topbar"><div class="backbtn" onclick="go('profile')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div><h3>Demo control panel</h3><span class="tag sim">SIM</span></div>
+          <div class="pad">
+            <div class="txt-xs" style="line-height:1.6;">Drives the real event pipeline with seeded data — the same monitoring loop, risk engine and alerting used in production, just fed a scripted timeline instead of live feeds.</div>
+            <div class="section-gap" style="display:flex; flex-direction:column; gap:9px;">
+              <div class="card" style="cursor:pointer;" onclick="runScenario(this,'home','GREEN')"><div class="row"><span class="txt-sm" style="font-weight:700; color:var(--ink);">1 · Normal conditions</span><span class="badge green"><span class="dot"></span>GREEN</span></div></div>
+              <div class="card" style="cursor:pointer;" onclick="runScenario(this,'trip','YELLOW')"><div class="row"><span class="txt-sm" style="font-weight:700; color:var(--ink);">2 · Weather deteriorating</span><span class="badge yellow"><span class="dot"></span>YELLOW</span></div></div>
+              <div class="card" style="cursor:pointer;" onclick="runScenario(this,'alerts','ORANGE')"><div class="row"><span class="txt-sm" style="font-weight:700; color:var(--ink);">3 · Cyclone bulletin issued</span><span class="badge orange"><span class="dot"></span>ORANGE</span></div></div>
+              <div class="card" style="cursor:pointer;" onclick="runScenario(this,'geofence','ORANGE')"><div class="row"><span class="txt-sm" style="font-weight:700; color:var(--ink);">4 · Geofence proximity</span><span class="badge orange"><span class="dot"></span>ORANGE</span></div></div>
+              <div class="card" style="cursor:pointer;" onclick="runScenario(this,'sosconfirm','RED')"><div class="row"><span class="txt-sm" style="font-weight:700; color:var(--ink);">5 · SOS triggered</span><span class="badge red"><span class="dot"></span>RED</span></div></div>
+              <div class="card" style="cursor:pointer;" onclick="runScenario(this,'rescue','RED')"><div class="row"><span class="txt-sm" style="font-weight:700; color:var(--ink);">6 · Rescue simulation</span><span class="badge red"><span class="dot"></span>RED</span></div></div>
+              <div class="card" style="cursor:pointer;" onclick="runScenario(this,'summary','GREEN')"><div class="row"><span class="txt-sm" style="font-weight:700; color:var(--ink);">7 · Safe — recovered</span><span class="badge green"><span class="dot"></span>GREEN</span></div></div>
+            </div>
+            <div class="card section-gap" style="border-left:3px solid var(--brass);"><div class="txt-xs">Tapping a scenario jumps the prototype to that point in the PLAN → MONITOR → EMERGENCY → RESCUE → RECOVER storyline for a live judge walkthrough.</div></div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- ============ OVERLAY SHEETS ============ -->
+      <div class="overlay" id="ov-voice" onclick="if(event.target===this)toggleSheet('voice',false)">
+        <div class="sheet" style="text-align:center; padding-bottom:34px;">
+          <div class="sheet-handle"></div>
+          <div style="width:64px; height:64px; border-radius:50%; background:var(--teal-tint); margin:0 auto 14px; display:flex; align-items:center; justify-content:center;">
+            <svg class="icon-lg" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M12 15a3 3 0 003-3V6a3 3 0 00-6 0v6a3 3 0 003 3z"/><path d="M19 11a7 7 0 01-14 0M12 19v3"/></svg>
+          </div>
+          <div class="h-title">Listening…</div>
+          <div class="txt-sm" style="margin-top:6px;">Speak in English, Hindi, or your regional language.</div>
+          <button class="btn ghost section-gap" onclick="toggleSheet('voice',false)">Cancel</button>
+        </div>
+      </div>
+
+      <div class="overlay" id="ov-explain" onclick="if(event.target===this)toggleSheet('explain',false)">
+        <div class="sheet">
+          <div class="sheet-handle"></div>
+          <div class="h-title">Why ORCA recommends this</div>
+          <div class="txt-sm section-gap">
+            1. Wave height is within the safe range for your vessel type.<br><br>
+            2. Wind conditions are favourable and expected to stay that way through the morning.<br><br>
+            3. No official marine advisory is currently active for this area.<br><br>
+            4. Your planned return time falls before the forecast deterioration window.
+          </div>
+          <div class="txt-xs section-gap">Confidence: High · This explanation summarizes structured agent output — it is not a chat guess.</div>
+          <button class="btn primary section-gap" onclick="toggleSheet('explain',false)">Close</button>
+        </div>
+      </div>
+
+      <div class="overlay" id="ov-evidence" onclick="if(event.target===this)toggleSheet('evidence',false)">
+        <div class="sheet">
+          <div class="sheet-handle"></div>
+          <div class="h-title">Evidence &amp; sources</div>
+          <div class="card section-gap">
+            <div class="row"><span class="txt-sm" style="font-weight:700; color:var(--ink);">Weather Agent</span><span class="tag real">REAL</span></div>
+            <div class="txt-xs" style="margin-top:5px;">IMD gridded forecast · observed 10:38 AM · confidence 0.91</div>
+          </div>
+          <div class="card">
+            <div class="row"><span class="txt-sm" style="font-weight:700; color:var(--ink);">Ocean Agent</span><span class="tag sim">SIM</span></div>
+            <div class="txt-xs" style="margin-top:5px;">Seeded wave/swell dataset · observed 10:30 AM · confidence 0.84</div>
+          </div>
+          <div class="card">
+            <div class="row"><span class="txt-sm" style="font-weight:700; color:var(--ink);">Marine Warnings</span><span class="tag real">REAL</span></div>
+            <div class="txt-xs" style="margin-top:5px;">No active bulletin · checked 10:40 AM</div>
+          </div>
+          <div class="card">
+            <div class="row"><span class="txt-sm" style="font-weight:700; color:var(--ink);">Satellite Agent</span><span class="tag sim">SIM</span></div>
+            <div class="txt-xs" style="margin-top:5px;">Sample SST/chlorophyll product · observed 9:50 AM · confidence 0.72</div>
+          </div>
+          <div class="card" style="border-left:3px solid var(--yellow);">
+            <div class="row"><span class="txt-sm" style="font-weight:700; color:var(--ink);">Source conflict detected</span><span class="tag" style="background:var(--yellow-tint); color:var(--yellow);">RESOLVED</span></div>
+            <div class="txt-xs" style="margin-top:6px; line-height:1.6;">Wind source A: 18 km/h &nbsp;·&nbsp; Wind source B: 27 km/h<br>ORCA used the higher, fresher, official-authority reading (27 km/h) rather than averaging — the conservative value drives the risk score.</div>
+          </div>
+          <button class="btn primary section-gap" onclick="toggleSheet('evidence',false)">Close</button>
+        </div>
+      </div>
+
+      <div class="overlay" id="ov-layers" onclick="if(event.target===this)toggleSheet('layers',false)">
+        <div class="sheet">
+          <div class="sheet-handle"></div>
+          <div class="h-title">Map layers</div>
+          <div class="txt-xs section-gap">Choose one focus layer at a time to keep the map readable.</div>
+          <div class="col section-gap" style="gap:8px;">
+            <div class="row card"><span class="txt-sm">Planned route</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="knob"></div></div></div>
+            <div class="row card"><span class="txt-sm">Potential fishing zones (PFZ)</span><div class="toggle" onclick="this.classList.toggle('on')"><div class="knob"></div></div></div>
+            <div class="row card"><span class="txt-sm">Wave height</span><div class="toggle" onclick="this.classList.toggle('on')"><div class="knob"></div></div></div>
+            <div class="row card"><span class="txt-sm">Wind</span><div class="toggle" onclick="this.classList.toggle('on')"><div class="knob"></div></div></div>
+            <div class="row card"><span class="txt-sm">Geofences &amp; boundaries</span><div class="toggle" onclick="this.classList.toggle('on')"><div class="knob"></div></div></div>
+            <div class="row card"><span class="txt-sm">SST / chlorophyll <span class="tag sim" style="margin-left:4px;">SIM</span></span><div class="toggle" onclick="this.classList.toggle('on')"><div class="knob"></div></div></div>
+          </div>
+          <button class="btn primary section-gap" onclick="toggleSheet('layers',false)">Apply</button>
+        </div>
+      </div>
+
+      <div class="overlay" id="ov-safeloc" onclick="if(event.target===this)toggleSheet('safeloc',false)">
+        <div class="sheet">
+          <div class="sheet-handle"></div>
+          <div class="h-title">Nearby safe locations</div>
+          <div class="card section-gap">
+            <div class="row"><span class="txt-sm" style="font-weight:700; color:var(--ink);">Ratnagiri Harbour</span><span class="tag real">VERIFIED</span></div>
+            <div class="txt-xs" style="margin-top:5px;">4.2 km · ~22 min · Port authority facility</div>
+          </div>
+          <div class="card">
+            <div class="row"><span class="txt-sm" style="font-weight:700; color:var(--ink);">Ganpatipule Shelter Point</span><span class="tag real">VERIFIED</span></div>
+            <div class="txt-xs" style="margin-top:5px;">7.8 km · ~38 min · Designated emergency shelter</div>
+          </div>
+          <div class="txt-xs section-gap">Only locations verified through the safe-location registry are shown here.</div>
+          <button class="btn primary section-gap" onclick="toggleSheet('safeloc',false)">Close</button>
+        </div>
+      </div>
+
+      <div class="overlay" id="ov-endtrip" onclick="if(event.target===this)toggleSheet('endtrip',false)">
+        <div class="sheet" style="text-align:center;">
+          <div class="sheet-handle"></div>
+          <div class="h-title">End this trip?</div>
+          <div class="txt-sm section-gap">ORCA will stop continuous monitoring and generate a post-trip summary.</div>
+          <button class="btn primary section-gap" onclick="toggleSheet('endtrip',false); go('history');">End trip</button>
+          <button class="btn ghost section-gap" onclick="toggleSheet('endtrip',false)">Keep monitoring</button>
+        </div>
+      </div>
+
+      <div class="overlay" id="ov-cancelsos" onclick="if(event.target===this)toggleSheet('cancelsos',false)">
+        <div class="sheet" style="text-align:center;">
+          <div class="sheet-handle"></div>
+          <div class="h-title">Cancel emergency?</div>
+          <div class="txt-sm section-gap">Only cancel if this was triggered by mistake and you are not in danger.</div>
+          <button class="btn ghost-red section-gap" onclick="toggleSheet('cancelsos',false); go('trip');">This was a mistake — cancel</button>
+          <button class="btn sos section-gap" onclick="toggleSheet('cancelsos',false)">No, I still need help</button>
+        </div>
+      </div>
+
+      <div class="overlay" id="ov-newpost" onclick="if(event.target===this)toggleSheet('newpost',false)">
+        <div class="sheet">
+          <div class="sheet-handle"></div>
+          <div class="h-title">Share an observation</div>
+          <div class="segment section-gap">
+            <div class="seg on">Report hazard</div>
+            <div class="seg">General post</div>
+            <div class="seg">Poll</div>
+          </div>
+          <div class="card section-gap"><div class="txt-xs" style="color:var(--ink-faint);">Describe what you're seeing…</div></div>
+          <div class="txt-xs section-gap">Your approximate location and timestamp will be attached. Posts go through moderation before appearing widely.</div>
+          <button class="btn primary section-gap" onclick="toggleSheet('newpost',false)">Post</button>
+        </div>
+      </div>
+
+      <div class="overlay" id="ov-summary" onclick="if(event.target===this)toggleSheet('summary',false)">
+        <div class="sheet">
+          <div class="sheet-handle"></div>
+          <div class="h-title">Post-trip summary</div>
+          <div class="row section-gap"><span class="txt-xs">Duration</span><span class="txt-sm" style="font-weight:700;">8h 40m</span></div>
+          <div class="row"><span class="txt-xs">Distance</span><span class="txt-sm" style="font-weight:700;">14.2 km</span></div>
+          <div class="row"><span class="txt-xs">Alerts</span><span class="txt-sm" style="font-weight:700;">2 advisories</span></div>
+          <div class="row"><span class="txt-xs">Emergencies</span><span class="txt-sm" style="font-weight:700; color:var(--green);">None</span></div>
+          <div class="hr"></div>
+          <div class="txt-sm">Conditions stayed within forecast for most of the trip. Wind rose earlier than predicted around 1 PM — logged for future forecast comparison.</div>
+          <button class="btn primary section-gap" onclick="toggleSheet('summary',false)">Close</button>
+        </div>
+      </div>
+
+      <div class="overlay" id="ov-contacts" onclick="if(event.target===this)toggleSheet('contacts',false)">
+        <div class="sheet">
+          <div class="sheet-handle"></div>
+          <div class="h-title">Emergency contacts</div>
+          <div class="card section-gap">
+            <div class="row"><span class="txt-sm" style="font-weight:700; color:var(--ink);">Wife — Sunita Koli</span><span class="txt-xs">Primary</span></div>
+            <div class="txt-xs" style="margin-top:4px;">+91 98••• ••452</div>
+          </div>
+          <div class="card">
+            <div class="row"><span class="txt-sm" style="font-weight:700; color:var(--ink);">Ratnagiri Coastal Police</span><span class="txt-xs">Authority</span></div>
+            <div class="txt-xs" style="margin-top:4px;">+91 23••• ••100</div>
+          </div>
+          <button class="btn ghost section-gap">+ Add contact</button>
+        </div>
+      </div>
+
+      <div class="overlay" id="ov-datasrc" onclick="if(event.target===this)toggleSheet('datasrc',false)">
+        <div class="sheet">
+          <div class="sheet-handle"></div>
+          <div class="h-title">Data sources</div>
+          <div class="card section-gap"><div class="row"><span class="txt-sm">Weather</span><span class="tag real">REAL</span></div><div class="txt-xs" style="margin-top:4px;">IMD gridded API</div></div>
+          <div class="card"><div class="row"><span class="txt-sm">Ocean / waves</span><span class="tag sim">SIM</span></div><div class="txt-xs" style="margin-top:4px;">Seeded sample dataset</div></div>
+          <div class="card"><div class="row"><span class="txt-sm">Satellite (SST/chlorophyll)</span><span class="tag sim">SIM</span></div><div class="txt-xs" style="margin-top:4px;">Prototype dataset</div></div>
+          <div class="card"><div class="row"><span class="txt-sm">Marine warnings</span><span class="tag real">REAL</span></div><div class="txt-xs" style="margin-top:4px;">Official bulletin feed</div></div>
+          <div class="card"><div class="row"><span class="txt-sm">Rescue integration</span><span class="tag sim">SIM</span></div><div class="txt-xs" style="margin-top:4px;">Simulated — pending agency integration</div></div>
+          <button class="btn primary section-gap" onclick="toggleSheet('datasrc',false)">Close</button>
+        </div>
+      </div>
+
+      <div class="overlay" id="ov-alertsettings" onclick="if(event.target===this)toggleSheet('alertsettings',false)">
+        <div class="sheet">
+          <div class="sheet-handle"></div>
+          <div class="h-title">Alert preferences</div>
+          <div class="row card section-gap"><span class="txt-sm">Info</span><div class="toggle" onclick="this.classList.toggle('on')"><div class="knob"></div></div></div>
+          <div class="row card"><span class="txt-sm">Advisory</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="knob"></div></div></div>
+          <div class="row card"><span class="txt-sm">Warning</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="knob"></div></div></div>
+          <div class="row card"><span class="txt-sm">Critical &amp; emergency</span><div class="toggle on" onclick="this.classList.toggle('on')"><div class="knob"></div></div></div>
+          <div class="txt-xs section-gap">Critical and emergency alerts can't be turned off.</div>
+          <button class="btn primary section-gap" onclick="toggleSheet('alertsettings',false)">Save</button>
+        </div>
+      </div>
+
+      <!-- ============ SOS FAB (persistent) ============ -->
+      <div class="sos-fab" id="sosFab" onclick="go('sosconfirm')">SOS</div>
+
+      <!-- ============ BOTTOM NAV ============ -->
+      <nav class="bottomnav" id="bottomnav">
+        <button class="navitem active" data-tab="home" onclick="go('home')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+          <span>Home</span>
+        </button>
+        <button class="navitem" data-tab="plan" onclick="go('plan')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+          <span>Plan</span>
+        </button>
+        <button class="navitem" data-tab="map" onclick="go('map')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3L3 6v15l6-3 6 3 6-3V3l-6 3-6-3z"/></svg>
+          <span>Map</span>
+        </button>
+        <button class="navitem" data-tab="community" onclick="go('community')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="3"/><path d="M2 21v-1a5 5 0 015-5h4a5 5 0 015 5v1"/><circle cx="17" cy="7.5" r="2.3"/><path d="M16.5 13.2c1.9.3 3.5 1.8 3.5 4.2V21"/></svg>
+          <span>Community</span>
+        </button>
+        <button class="navitem" data-tab="profile" onclick="go('profile')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 6-6 8-6s6.5 2 8 6"/></svg>
+          <span>Profile</span>
+        </button>
+      </nav>
+
+    </div>
+  </div>
+</div>
+
+<div class="footer-hint">Working front-end prototype for ORCA · all data on this screen is seeded or simulated for demonstration, clearly tagged REAL / SIM throughout.</div>
+
+<script>
+const navMap = {
+  home:'home', chat:'home', map:'map', trip:'home', plan:'plan',
+  alerts:'home', community:'community', emergency:null, rescue:null,
+  history:'profile', profile:'profile', settings:'profile',
+  risk:'home', trace:'home', geofence:null, sosconfirm:null, demo:'profile'
+};
+const noChromeScreens = ['splash','onboard1','onboard2','onboard3','login','sosconfirm'];
+
+function go(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const target = document.getElementById('scr-'+name);
+  if(target) target.classList.add('active');
+
+  const showChrome = !noChromeScreens.includes(name);
+  document.getElementById('bottomnav').style.display = showChrome ? 'flex' : 'none';
+  document.getElementById('sosFab').style.display = (showChrome && !['emergency','rescue','geofence'].includes(name)) ? 'flex' : 'none';
+
+  document.querySelectorAll('.navitem').forEach(n=>n.classList.remove('active'));
+  const tab = navMap[name];
+  if(tab){
+    const el = document.querySelector('.navitem[data-tab="'+tab+'"]');
+    if(el) el.classList.add('active');
+  }
+}
+
+// ---- SOS confirmation: type picker ----
+function pickEmergency(el){
+  el.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+}
+
+// ---- SOS confirmation: hold-to-activate ----
+let holdTimer=null, holdStart=null;
+const HOLD_MS = 3000;
+function startHold(){
+  const circle = document.getElementById('holdCircle');
+  const CIRC = 427;
+  holdStart = Date.now();
+  circle.style.transition = 'none';
+  function step(){
+    const elapsed = Date.now()-holdStart;
+    const pct = Math.min(elapsed/HOLD_MS,1);
+    circle.setAttribute('stroke-dashoffset', CIRC - CIRC*pct);
+    if(pct>=1){ go('emergency'); resetHold(); return; }
+    holdTimer = requestAnimationFrame(step);
+  }
+  holdTimer = requestAnimationFrame(step);
+}
+function cancelHold(){ resetHold(); }
+function resetHold(){
+  if(holdTimer) cancelAnimationFrame(holdTimer);
+  const circle = document.getElementById('holdCircle');
+  if(circle){ circle.style.transition='stroke-dashoffset .25s ease'; circle.setAttribute('stroke-dashoffset','427'); }
+}
+
+// ---- Demo control panel scenario runner ----
+function runScenario(el, targetScreen, level){
+  document.querySelectorAll('#scr-demo .card[style*="cursor:pointer"]').forEach(c=>c.style.outline='none');
+  el.style.outline = '2px solid var(--brass)';
+  if(targetScreen==='summary'){ go('history'); toggleSheet('summary', true); return; }
+  go(targetScreen);
+}
+
+function toggleSheet(id, show){
+  const ov = document.getElementById('ov-'+id);
+  if(!ov) return;
+  ov.classList.toggle('show', show);
+}
+
+function selectDay(el, n){
+  document.querySelectorAll('#planDays .chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('planDetail1').style.display = n===1 ? 'block':'none';
+  document.getElementById('planDetail3').style.display = n===3 ? 'block':'none';
+  document.getElementById('planDetailOther').style.display = (n!==1 && n!==3) ? 'block':'none';
+}
+
+function segSwitch(el, which){
+  el.parentElement.querySelectorAll('.seg').forEach(s=>s.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('communityFeed').style.display = which==='feed' ? 'block':'none';
+  document.getElementById('communityPolls').style.display = which==='polls' ? 'block':'none';
+}
+
+// live clock in status bar
+function tick(){
+  const d = new Date();
+  let h = d.getHours()%12; if(h===0) h=12;
+  const m = d.getMinutes().toString().padStart(2,'0');
+  document.getElementById('clock').textContent = h+':'+m;
+}
+tick(); setInterval(tick, 15000);
+
+// map/wind toggle chips inside map screen & layers sheet
+document.addEventListener('click', function(e){
+  if(e.target.classList.contains('chip') && e.target.closest('.mapview')){
+    e.target.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+    e.target.classList.add('on');
+  }
+});
+</script>
+</body>
+</html>

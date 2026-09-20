@@ -93,7 +93,7 @@ export function Settings() {
           />
         </div>
         <div className="hr"></div>
-        <div className="card"><div className="txt-xs">APP V1.0 · PS-26176 · ISRO</div></div>
+        <div className="card"><div className="txt-xs">APP V1.0 · ORCA Marine Intelligence</div></div>
         <button className="btn ghost section-gap" onClick={() => go("demo")}>{t("set_open_demo")}</button>
       </div>
     </Screen>

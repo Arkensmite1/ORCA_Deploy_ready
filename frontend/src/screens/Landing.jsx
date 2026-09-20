@@ -36,9 +36,9 @@ export default function Landing() {
               <a onClick={() => scrollToId("land-capabilities")}>Capabilities</a>
               <a onClick={() => scrollToId("land-standard")}>Intelligence</a>
             </div>
-            <button className="land-btn ghost" onClick={() => go("login")}>Sign in</button>
+            <button className="land-btn primary" onClick={() => go("login")}>Sign in</button>
           </div>
-          <div style={{ background: "linear-gradient(90deg,rgba(234,76,70,.16),rgba(234,76,70,.03))", borderTop: "1px solid rgba(255,255,255,.06)", padding: "9px 32px", fontSize: 11.5, display: "flex", gap: 22, flexWrap: "wrap", color: "#F4B7B4" }}>
+          <div className="land-advisory">
             <span>⚠ WEATHER: {cond.levelLabel} forecast for the Ratnagiri coast.</span>
             <span>⚠ GEOFENCE: vessels tracked within 2.1 km of the restricted boundary.</span>
           </div>
@@ -46,7 +46,7 @@ export default function Landing() {
 
         <div id="land-top" className="land-hero">
           <div>
-            <span className="land-eyebrow"><span className="live-dot" />LIVE PROTOTYPE · PROBLEM STATEMENT 26176</span>
+            <span className="land-eyebrow"><span className="live-dot" />LIVE MARINE INTELLIGENCE</span>
             <h1>See risk clearly.<br /><span className="accent">Fish with confidence.</span></h1>
             <p className="lead">
               ORCA gives small-boat fishermen a shared, grounded picture of wind, waves, and marine
@@ -65,10 +65,10 @@ export default function Landing() {
             </div>
           </div>
 
-          <div className="land-hero-card">
+          <div className="land-hero-card" style={{ backgroundImage: "url(https://images.unsplash.com/photo-1541828985935-1fe979f9fc0b?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200)" }}>
             <span className="eyebrow-sm">LIVE MARINE INTELLIGENCE</span>
             <div className="h-title">{cond.levelLabel} — {userProfile.coast}</div>
-            <div className="txt-xs" style={{ color: "#B8CEE6", marginTop: 6 }}>{cond.updated} <span className="tag sim" style={{ marginLeft: 6 }}>SIM</span></div>
+            <div className="txt-xs" style={{ color: "#CBD9F2", marginTop: 6 }}>{cond.updated} <span className="tag sim" style={{ marginLeft: 6 }}>SIM</span></div>
             <div className="land-hero-metrics">
               <div className="m"><span>Wind</span><b>{cond.wind}</b></div>
               <div className="m"><span>Waves</span><b>{cond.waves}</b></div>
@@ -90,22 +90,14 @@ export default function Landing() {
           </p>
           <div className="land-split">
             <div className="land-tile">
-              <div className="land-tile-art">
-                <svg width="200" height="120" viewBox="0 0 200 120" fill="none">
-                  <path d="M0 82c18-20 36-20 54 0s36 20 54 0 36-20 54 0 24 12 38 4" stroke="#fff" strokeWidth="3" strokeLinecap="round" opacity=".85" />
-                  <path d="M0 96c18-14 36-14 54 0s36 14 54 0 36-14 54 0 24 8 38 2" stroke="#FF8A3D" strokeWidth="3" strokeLinecap="round" opacity=".7" />
-                  <circle cx="150" cy="34" r="16" fill="#FFDDA8" opacity=".9" />
-                </svg>
-              </div>
+              <div className="land-tile-art" style={{ backgroundImage: "url(https://images.unsplash.com/photo-1585713181935-d5f622cc2415?crop=entropy&cs=srgb&fm=jpg&q=85&w=1000)" }}></div>
               <h3>Live maritime picture</h3>
               <p>Wind, wave and geofence conditions from the Weather, Ocean and Geospatial agents — understood before risk reaches the boat.</p>
               <span className="land-link" onClick={() => go("login")}>Explore the map →</span>
             </div>
             <div className="land-tile">
-              <div className="land-tile-art">
-                <div className="land-agent-icon">
-                  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.8"><path d="M12 2l8 4v6c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-4z" /></svg>
-                </div>
+              <div className="land-agent-icon">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FB923C" strokeWidth="1.8"><path d="M12 2l8 4v6c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-4z" /></svg>
               </div>
               <h3>Decision-ready intelligence</h3>
               <p>Ask in plain English or Hindi and get a grounded Go / Watch / Reconsider verdict — built from five agents, never invented by the model.</p>
@@ -179,12 +171,12 @@ export default function Landing() {
 
         <div id="land-footer" className="land-footer">
           <div className="land-footer-inner">
-            <span><b style={{ color: "#fff" }}>ORCA</b> · Marine Intelligence &amp; Safety</span>
+            <span><b style={{ color: "var(--ink)" }}>ORCA</b> · Marine Intelligence &amp; Safety</span>
             <span>
               <a onClick={() => scrollToId("land-platform")}>Platform</a>
               <a onClick={() => scrollToId("land-capabilities")}>Capabilities</a>
               <a onClick={() => go("login")}>Sign in</a>
-              <a>Problem Statement 26176 · ISRO</a>
+              <a>ORCA Marine Intelligence</a>
             </span>
           </div>
         </div>

@@ -18,7 +18,7 @@ export function Splash() {
           {t("splash_tagline")}
         </div>
         <button className="btn brass" style={{ marginTop: 38, maxWidth: 200 }} onClick={() => go("onboard1")}>{t("btn_begin")}</button>
-        <div className="txt-xs" style={{ color: "var(--ink-faint)", marginTop: 14 }}>Problem Statement 26176 · ISRO</div>
+        <div className="txt-xs" style={{ color: "var(--ink-faint)", marginTop: 14 }}>ORCA Marine Intelligence</div>
       </div>
     </Screen>
   );

@@ -204,7 +204,7 @@ export default function Home() {
         </div>
 
         <div className="txt-xs" style={{ marginTop: 26, textAlign: "center" }}>
-          Working prototype for ORCA · Problem Statement 26176 · data sources: {dataSources.map((d) => d.name).join(" · ")} — each tagged REAL or SIM above.
+          ORCA Marine Intelligence · data sources: {dataSources.map((d) => d.name).join(" · ")} — each tagged REAL or SIM above.
         </div>
       </div>
     </Screen>

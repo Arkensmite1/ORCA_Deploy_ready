@@ -17,6 +17,7 @@ function OrcaMessage({ m }) {
         <div className="txt-sm" style={{ marginTop: 7 }}>
           {m.bullets.map((b, i) => <div key={i}>• {b}</div>)}
         </div>
+        {m.text && <div className="txt-xs" style={{ marginTop: 8, opacity: 0.85 }}>{m.text}</div>}
         {m.watch && <div className="txt-xs" style={{ marginTop: 8 }}>{m.watch}</div>}
         <div className="row" style={{ marginTop: 10 }}>
           <span className="txt-xs">{m.updated}</span>

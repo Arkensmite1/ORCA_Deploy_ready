@@ -40,8 +40,14 @@ def _get_openai_client():
         return None
 
 
-def llm_rephrase(base_text: str, lang: str, risk_level: str, facts: dict) -> str:
-    """Best-effort natural-language rephrasing of a template answer.
+def llm_answer(user_text: str, base_text: str, lang: str, risk_level: str, facts: dict) -> str:
+    """Best-effort natural-language answer, grounded in `base_text`/`facts`.
+
+    Unlike a plain rephrase, this is given the user's *exact* question so it
+    can actually address what was asked (e.g. a question phrased about
+    "yesterday" should be answered differently from one about "today"),
+    while still being constrained to only the given facts — it can never
+    invent a number, change the risk level, or contradict `base_text`.
 
     Falls back to `base_text` unchanged whenever no API key is configured or
     the call fails, so the app works identically with or without a key.
@@ -52,24 +58,32 @@ def llm_rephrase(base_text: str, lang: str, risk_level: str, facts: dict) -> str
     try:
         lang_name = "Hindi" if lang == "hi" else "English"
         prompt = (
-            "You are ORCA's explain-only response layer for a marine-safety app. "
-            "Rephrase the message below for a small-boat fisherman in clear, "
-            f"reassuring {lang_name}. Keep it to 1-3 short sentences. "
-            "Do NOT invent, change, or omit any number, risk level, or fact — "
-            "only rephrase.\n\n"
+            "You are ORCA's explain-only response layer for a marine-safety app "
+            "used by small-boat fishermen. You are given (1) the user's exact "
+            "question and (2) a grounded template answer already computed by a "
+            "deterministic risk engine. Write a direct, natural reply to the "
+            "user's actual question, in clear, reassuring "
+            f"{lang_name}, in 1-4 short sentences. "
+            "Use ONLY the facts listed below — never invent, change, or omit a "
+            "number, date, or risk level, and never contradict the template "
+            "answer. If the user's question refers to a past time (e.g. "
+            "'yesterday', 'last night'), briefly acknowledge that ORCA gives "
+            "live/upcoming guidance rather than a historical lookup, then give "
+            "the current assessment from the facts.\n\n"
+            f"User's question: {user_text}\n\n"
             f"Fixed facts: risk_level={risk_level}, {facts}\n\n"
-            f"Message to rephrase: {base_text}"
+            f"Grounded template answer: {base_text}"
         )
         resp = client.chat.completions.create(
             model=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
             messages=[{"role": "user", "content": prompt}],
-            max_tokens=200,
+            max_tokens=220,
             temperature=0.4,
         )
         text = (resp.choices[0].message.content or "").strip()
         return text or base_text
     except Exception as exc:  # pragma: no cover - defensive, keeps demo alive
-        logger.warning("OpenAI rephrase failed, using template text: %s", exc)
+        logger.warning("OpenAI answer generation failed, using template text: %s", exc)
         return base_text
 
 # ---------------------------------------------------------------------------
@@ -240,8 +254,13 @@ _ON_TOPIC_HINTS = [
 ]
 
 
+_PAST_HINTS = ["yesterday", "last night", "last week", "earlier today", "was it"]
+
+
 def classify_intent(text: str) -> str:
     q = text.lower()
+    if any(w in q for w in _PAST_HINTS):
+        return "PAST_QUERY"
     if any(w in q for w in ["cyclone", "storm", "warning", "bulletin"]):
         return "WARNING_QUERY"
     if any(w in q for w in ["afternoon", "evening", "later"]):
@@ -281,8 +300,8 @@ def run_query(text: str, scenario: str = "YELLOW") -> dict:
     answer = build_answer(intent, lang, risk, c, geo)
     skip_rephrase = answer.pop("skipRephrase", False)
     if answer.get("text") and not skip_rephrase:
-        answer["text"] = llm_rephrase(
-            answer["text"], lang, risk["level"],
+        answer["text"] = llm_answer(
+            text, answer["text"], lang, risk["level"],
             {"wind_kmh": evidence["resolved_wind_kmh"], "wave_m": ocean["wave_m"],
              "warning": c["warning"], "recommendation": risk["recommendation"]},
         )
@@ -343,6 +362,16 @@ def build_answer(intent: str, lang: str, risk: dict, c: dict, geo: dict) -> dict
         return {"kind": "simple", "langTag": "हिंदी detected", "tone": risk["level"].lower(),
                 "text": txt}
 
+    if intent == "PAST_QUERY":
+        safe = risk["level"] in ("GREEN", "YELLOW")
+        return {"kind": "simple", "badge": "REAL-TIME ONLY", "tone": "teal",
+                "text": (
+                    f"ORCA gives live and upcoming guidance, not a historical lookup, so I can't "
+                    f"go back to check yesterday. Right now conditions are {c['levelLabel'].lower()} "
+                    f"— wind {c['wind']}, waves {c['waves']}"
+                    + (", with an active " + c["warning"].lower() + "." if c["warning"] else ".")
+                    + f" {risk['recommendation']}. Ask me about today or tomorrow for a live read.")}
+
     if intent == "OUT_OF_SCOPE":
         return {"kind": "simple", "badge": "OUT OF SCOPE", "tone": "teal", "skipRephrase": True,
                 "text": ("ORCA only answers marine-safety questions for your coast — conditions, "
@@ -393,15 +422,38 @@ def build_answer(intent: str, lang: str, risk: dict, c: dict, geo: dict) -> dict
                          "changed — consider Zone D), Days 4–7 currently favourable. The plan "
                          "re-assesses automatically as new data arrives.")}
 
-    # default safety query → risk card
+    # default safety query → risk card, built from the actual scenario values
+    # (not fixed strings) so two different questions never collapse into an
+    # identical-looking card unless conditions actually are identical.
     if risk["level"] in ("GREEN", "YELLOW"):
+        bullets = [
+            f"Wind {c['wind']} — {'favourable' if c['wind_kmh'] < 25 else 'elevated but manageable'}",
+            f"Waves {c['waves']} — {'within safe range' if c['wave_m'] < 2 else 'slightly elevated'}",
+            (f"{c['warning']} in effect" if c["warning"] else "No active marine warning"),
+        ]
+        text = (
+            f"{risk['recommendation']} — wind is {c['wind']} and waves are {c['waves']}, both "
+            f"within today's safe range, and there's no active marine warning. Conditions may "
+            f"shift after 3 PM, so plan your return before then."
+        )
         return {"kind": "risk-card", "badge": "LOW RISK" if risk["level"] == "GREEN" else "MODERATE",
                 "tone": risk["level"].lower(), "title": risk["recommendation"],
-                "bullets": ["Wind favourable, waves in range", "No active marine warning",
-                            "Return window stays favourable"],
-                "watch": "Watch: conditions may shift after 3 PM", "updated": "Updated just now"}
+                "bullets": bullets,
+                "watch": "Watch: conditions may shift after 3 PM", "updated": "Updated just now",
+                "text": text}
+
+    bullets = [
+        f"Wind {c['wind']} — elevated",
+        f"Waves {c['waves']} — above safe range",
+        (f"{c['warning']} in effect" if c["warning"] else "Marine conditions deteriorating"),
+    ]
+    text = (
+        f"{risk['recommendation']} — wind ({c['wind']}) and waves ({c['waves']}) are both elevated"
+        + (f", with an active {c['warning'].lower()}." if c["warning"] else ".")
+        + " Wait for conditions to improve before heading out."
+    )
     return {"kind": "risk-card", "badge": "HIGH RISK", "tone": risk["level"].lower(),
             "title": risk["recommendation"],
-            "bullets": ["Wind and waves elevated", "Official warning in effect",
-                        "Return window unfavourable"],
-            "watch": "Do not depart until conditions improve", "updated": "Updated just now"}
+            "bullets": bullets,
+            "watch": "Do not depart until conditions improve", "updated": "Updated just now",
+            "text": text}

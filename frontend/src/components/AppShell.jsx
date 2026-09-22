@@ -35,8 +35,8 @@ const sidebarItems = [
 
 export function OrcaMark() {
   return (
-    <div className="mark">
-      <Icon.logo />
+    <div className="mark" data-testid="orca-logo">
+      <img src="/orca-logo.png" alt="ORCA" />
     </div>
   );
 }

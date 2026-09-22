@@ -44,7 +44,7 @@ export default function Home() {
           </div>
           <div className="dash-greeting-actions">
             <button className="btn ghost inline" onClick={() => go("plan")}>{t("tile_plan")}</button>
-            <button className="btn primary inline" onClick={() => go("chat")}>+ New conversation</button>
+            <button className="btn primary inline" onClick={() => go("chat")}>+ New Query</button>
           </div>
         </div>
 

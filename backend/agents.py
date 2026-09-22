@@ -228,6 +228,18 @@ def detect_language(text: str) -> str:
     return "en"
 
 
+# Keywords that indicate the question is at least about the marine-safety
+# domain ORCA covers. If a query matches none of the specific intents below
+# AND none of these, it's treated as out-of-scope rather than silently
+# answered with a generic risk card (see OUT_OF_SCOPE below).
+_ON_TOPIC_HINTS = [
+    "fish", "boat", "sea", "ocean", "wave", "wind", "weather", "sail", "trip",
+    "safe", "safety", "risk", "danger", "dangerous", "go out", "depart",
+    "tomorrow", "today", "morning", "coast", "tide", "current", "swell",
+    "port", "harbour", "harbor", "vessel", "engine", "sos", "rescue", "orca",
+]
+
+
 def classify_intent(text: str) -> str:
     q = text.lower()
     if any(w in q for w in ["cyclone", "storm", "warning", "bulletin"]):
@@ -240,6 +252,8 @@ def classify_intent(text: str) -> str:
         return "ROUTE_QUERY"
     if any(w in q for w in ["plan", "week", "7-day", "7 day", "day 3"]):
         return "PLAN_QUERY"
+    if not any(w in q for w in _ON_TOPIC_HINTS):
+        return "OUT_OF_SCOPE"
     return "SAFETY_QUERY"
 
 
@@ -265,7 +279,8 @@ def run_query(text: str, scenario: str = "YELLOW") -> dict:
 
     # Response generator (grounded phrasing only)
     answer = build_answer(intent, lang, risk, c, geo)
-    if answer.get("text"):
+    skip_rephrase = answer.pop("skipRephrase", False)
+    if answer.get("text") and not skip_rephrase:
         answer["text"] = llm_rephrase(
             answer["text"], lang, risk["level"],
             {"wind_kmh": evidence["resolved_wind_kmh"], "wave_m": ocean["wave_m"],
@@ -327,6 +342,13 @@ def build_answer(intent: str, lang: str, risk: dict, c: dict, geo: dict) -> dict
         )
         return {"kind": "simple", "langTag": "हिंदी detected", "tone": risk["level"].lower(),
                 "text": txt}
+
+    if intent == "OUT_OF_SCOPE":
+        return {"kind": "simple", "badge": "OUT OF SCOPE", "tone": "teal", "skipRephrase": True,
+                "text": ("ORCA only answers marine-safety questions for your coast — conditions, "
+                         "warnings, fishing zones, routes, and your trip plan. I can't help with "
+                         "that one, but ask me anything about wind, waves, warnings, or whether "
+                         "it's safe to go out.")}
 
     if intent == "WARNING_QUERY":
         if c["warning"]:
